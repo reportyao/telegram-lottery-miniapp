@@ -1,0 +1,116 @@
+root@iZj6c0wgvce81u5p5jgrd4Z:~# # 进入项目目录
+cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp
+
+# 步骤1: 强制杀死所有进程
+pkill -9 -f npm
+pkill -9 -f node  
+pkill -9 -f next
+pkill -9 -f dev
+sleep 5
+
+# 步骤2: 彻底清理所有端口 3000-3010
+echo "验证端口清理状态..."
+for port in {3000..3010}; do
+    if lsof -i:$port >/dev/null 2>&1; then
+        echo "❌ 端口 $port 仍被占用: $(lsof -i:$port | head -1)"
+        fuser -k ${port}/tcp 2>/dev/null
+    else
+        echo "✅ 端口 $port 已清理"
+    fi
+done
+
+# 步骤3: 重新创建API文件
+mkdir -p app/api/health
+mkdir -p app/api/get-products
+
+cat > app/api/health/route.ts << 'TS_API'
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  console.log('✅ 健康检查API被调用');
+  
+  return NextResponse.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    message: 'API正常运行',
+    port: '3000',
+    version: '1.0.0'
+  }, { status: 200 });
+}
+TS_API
+
+cat > app/api/get-products/route.ts << 'TS_API'
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  console.log('✅ 商品API被调用');
+  
+  const products = [
+    { id: '1', title: 'iPhone 15 Pro', price: 9999 },
+    { id: '2', title: 'MacBook Air M3', price: 8999 },
+    { id: '3', title: 'AirPods Pro', price: 1999 }
+  ];
+  
+  return NextResponse.json({
+    success: true,
+    data: products,
+    message: '商品列表获取成功',
+    count: products.length
+  }, { status: 200 });
+}
+TS_API
+
+echo "API文件创建完成，检查:"
+ls -la app/api/*/route.ts
+
+# 步骤4: 清理缓存
+echo "=== 修复完成 ==="ut 10 http://localhost:3000/api/get-productsout 10 http://localhost:3000/admin || echo '失败')"ho '失败')"
+验证端口清理状态...
+✅ 端口 3000 已清理
+✅ 端口 3001 已清理
+✅ 端口 3002 已清理
+✅ 端口 3003 已清理
+✅ 端口 3004 已清理
+✅ 端口 3005 已清理
+✅ 端口 3006 已清理
+✅ 端口 3007 已清理
+✅ 端口 3008 已清理
+✅ 端口 3009 已清理
+✅ 端口 3010 已清理
+API文件创建完成，检查:
+-rw-r--r-- 1 root root 469 Nov  2 19:25 app/api/get-products/route.ts
+-rw-r--r-- 1 root root 314 Nov  2 19:25 app/api/health/route.ts
+缓存清理完成
+启动应用...
+[1] 402535
+[1]+  Done                    timeout 30 bash -c 'PORT=3000 npm run dev' > app.log 2>&1
+=== 应用状态检查 ===
+root      402324  1.6  1.5 1092852 56592 ?       Ssl  19:24   0:00 npm run dev -p 3000
+tcp6       0      0 :::3000                 :::*                    LISTEN      402398/next-server  
+=== 启动日志 ===
+    at Server.listen (node:net:2067:7)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js:280:16
+    at new Promise (<anonymous>)
+    at startServer (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js:191:11)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js:310:52
+    at Span.traceAsyncFn (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/trace/trace.js:154:26)
+    at process.<anonymous> (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js:310:35)
+    at process.emit (node:events:524:28) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+=== API测试结果 ===
+主页: 200
+健康: 404
+商品: 404
+管理: 200
+=== 详细响应 ===
+健康检查响应:
+<!DOCTYPE html><html lang="zh"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/app/layout.css?v=1762093525876" data-precedence="next_static/css/app/layout.css"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack.js?v=1762093525876"/><script src="/_next/static/chunks/main-app.js?v=1762093525876" async=""></script><script src="/_next/static/chunks/app-pages-internals.js" async=""></script><script src="/_next/static/chunks/app/layout.js" async=""></script><meta name="robots" content="noindex"/><title>404: This page could not be found.</title><title>LuckyMart TJ - 幸运集市</title><meta name="description" content="基于Telegram的一元夺宝电商平台"/><script src="/_next/static/chunks/polyfills.js" noModule=""></script></head><body class="antialiased"><div style="font-family:system-ui,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;;height:100vh;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center"><div><style>body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}</style><h1 class="next-error-h1" style="display:inline-block;margin:0 20px 0 0;padding:0 23px 0 0;font-size:24px;font-weight:500;vertical-align:top;line-height:49px">404</h1><div style="display:inline-block"><h2 style="font-size:14px;font-weight:400;line-height:49px;margin:0">This page could not be found.</h2></div></div></div><script src="/_next/static/chunks/webpack.js?v=1762093525876" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/css/app/layout.css?v=1762093525876\",\"style\"]\n0:D{\"name\":\"r2\",\"env\":\"Server\"}\n"])</script><script>self.__next_f.push([1,"2:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n5:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n6:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n8:I[\"(app-pages-browser)/./components/ErrorBoundary.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"default\"]\n9:I[\"(app-pages-browser)/./contexts/LanguageContext.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"LanguageProvider\"]\n11:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n3:D{\"name\":\"\",\"env\":\"Server\"}\n4:D{\"name\":\"NotFound\",\"env\":\"Server\"}\n4:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:D{\"name\":\"RootLayout\",\"env\":\"Server"])</script><script>self.__next_f.push([1,"\"}\na:D{\"name\":\"NotFound\",\"env\":\"Server\"}\nb:{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"}\nc:{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"}\nd:{\"display\":\"inline-block\"}\ne:{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0}\na:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":\"$b\",\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":\"$c\",\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":\"$d\",\"children\":[\"$\",\"h2\",null,{\"style\":\"$e\",\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:[\"$\",\"html\",null,{\"lang\":\"zh\",\"children\":[\"$\",\"body\",null,{\"className\":\"antialiased\",\"children\":[\"$\",\"$L8\",null,{\"children\":[\"$\",\"$L9\",null,{\"children\":[\"$\",\"$L5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$a\",\"notFoundStyles\":[]}]}]}]}]}]\nf:D{\"name\":\"rQ\",\"env\":\"Server\"}\nf:[\"$\",\"meta\",null,{\"name\":\"robots\",\"content\":\"noindex\"}]\n10:D{\"name\":\"\",\"env\":\"Server\"}\n12:[]\n0:[\"$\",\"$L2\",null,{\"buildId\":\"development\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"api\",\"health\"],\"initialTree\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{},[[\"$L3\",\"$4\",null],null],null]},[null,[\"$\",\"$L5\",nul"])</script><script>self.__next_f.push([1,"l,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"/_not-found\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/app/layout.css?v=1762093525876\",\"precedence\":\"next_static/css/app/layout.css\",\"crossOrigin\":\"$undefined\"}]],\"$7\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[\"$f\",\"$L10\"],\"globalErrorComponent\":\"$11\",\"missingSlots\":\"$W12\"}]\n"])</script><script>self.__next_f.push([1,"10:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"LuckyMart TJ - 幸运集市\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"基于Telegram的一元夺宝电商平台\"}]]\n3:null\n"])</script></body></html>
+商品API响应:
+<!DOCTYPE html><html lang="zh"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/app/layout.css?v=1762093525911" data-precedence="next_static/css/app/layout.css"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack.js?v=1762093525911"/><script src="/_next/static/chunks/main-app.js?v=1762093525911" async=""></script><script src="/_next/static/chunks/app-pages-internals.js" async=""></script><script src="/_next/static/chunks/app/layout.js" async=""></script><meta name="robots" content="noindex"/><title>404: This page could not be found.</title><title>LuckyMart TJ - 幸运集市</title><meta name="description" content="基于Telegram的一元夺宝电商平台"/><script src="/_next/static/chunks/polyfills.js" noModule=""></script></head><body class="antialiased"><div style="font-family:system-ui,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;;height:100vh;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center"><div><style>body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}</style><h1 class="next-error-h1" style="display:inline-block;margin:0 20px 0 0;padding:0 23px 0 0;font-size:24px;font-weight:500;vertical-align:top;line-height:49px">404</h1><div style="display:inline-block"><h2 style="font-size:14px;font-weight:400;line-height:49px;margin:0">This page could not be found.</h2></div></div></div><script src="/_next/static/chunks/webpack.js?v=1762093525911" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/css/app/layout.css?v=1762093525911\",\"style\"]\n0:D{\"name\":\"r2\",\"env\":\"Server\"}\n"])</script><script>self.__next_f.push([1,"2:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n5:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n6:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n8:I[\"(app-pages-browser)/./components/ErrorBoundary.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"default\"]\n9:I[\"(app-pages-browser)/./contexts/LanguageContext.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"LanguageProvider\"]\n11:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n3:D{\"name\":\"\",\"env\":\"Server\"}\n4:D{\"name\":\"NotFound\",\"env\":\"Server\"}\n4:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:D{\"name\":\"RootLayout\",\"env\":\"Server"])</script><script>self.__next_f.push([1,"\"}\na:D{\"name\":\"NotFound\",\"env\":\"Server\"}\nb:{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"}\nc:{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"}\nd:{\"display\":\"inline-block\"}\ne:{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0}\na:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":\"$b\",\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":\"$c\",\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":\"$d\",\"children\":[\"$\",\"h2\",null,{\"style\":\"$e\",\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:[\"$\",\"html\",null,{\"lang\":\"zh\",\"children\":[\"$\",\"body\",null,{\"className\":\"antialiased\",\"children\":[\"$\",\"$L8\",null,{\"children\":[\"$\",\"$L9\",null,{\"children\":[\"$\",\"$L5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$a\",\"notFoundStyles\":[]}]}]}]}]}]\nf:D{\"name\":\"rQ\",\"env\":\"Server\"}\nf:[\"$\",\"meta\",null,{\"name\":\"robots\",\"content\":\"noindex\"}]\n10:D{\"name\":\"\",\"env\":\"Server\"}\n12:[]\n0:[\"$\",\"$L2\",null,{\"buildId\":\"development\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"api\",\"get-products\"],\"initialTree\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{},[[\"$L3\",\"$4\",null],null],null]},[null,[\"$\",\"$L"])</script><script>self.__next_f.push([1,"5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"/_not-found\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/app/layout.css?v=1762093525911\",\"precedence\":\"next_static/css/app/layout.css\",\"crossOrigin\":\"$undefined\"}]],\"$7\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[\"$f\",\"$L10\"],\"globalErrorComponent\":\"$11\",\"missingSlots\":\"$W12\"}]\n"])</script><script>self.__next_f.push([1,"10:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"LuckyMart TJ - 幸运集市\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"基于Telegram的一元夺宝电商平台\"}]]\n3:null\n"])</script></body></html>=== 修复完成 ===
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# 
