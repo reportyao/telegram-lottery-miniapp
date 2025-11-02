@@ -44,7 +44,7 @@ interface Resale {
 
 export default function ResaleMarketPage() {
   const router = useRouter()
-  const { user, tg } = useTelegram()
+  const { user } = useTelegram()
   const [resales, setResales] = useState<Resale[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -96,8 +96,8 @@ export default function ResaleMarketPage() {
       
       if (data.success) {
         // 发送成功消息到 Telegram
-        if (tg) {
-          tg.showPopup({
+        if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showPopup({
             title: '购买成功！',
             message: `成功购买 ${sharesToBuy} 份转售份额！`,
             buttons: [{ type: 'ok' }]
@@ -108,8 +108,8 @@ export default function ResaleMarketPage() {
         setSharesToBuy(1)
         loadResales() // 刷新列表
       } else {
-        if (tg) {
-          tg.showPopup({
+        if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showPopup({
             title: '购买失败',
             message: data.error || '购买失败',
             buttons: [{ type: 'ok' }]
@@ -118,8 +118,8 @@ export default function ResaleMarketPage() {
       }
     } catch (err) {
       console.error('Purchase error:', err)
-      if (tg) {
-        tg.showPopup({
+      if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+        window.Telegram.WebApp.showPopup({
           title: '错误',
           message: '网络错误，请重试',
           buttons: [{ type: 'ok' }]

@@ -56,7 +56,7 @@ interface Participation {
 
 export default function MyResalesPage() {
   const router = useRouter()
-  const { user, tg } = useTelegram()
+  const { user } = useTelegram()
   const [myResales, setMyResales] = useState<Resale[]>([])
   const [myParticipations, setMyParticipations] = useState<Participation[]>([])
   const [loading, setLoading] = useState(true)
@@ -109,8 +109,8 @@ export default function MyResalesPage() {
 
     const price = parseFloat(pricePerShare)
     if (isNaN(price) || price <= 0) {
-      if (tg) {
-        tg.showPopup({
+      if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+        window.Telegram.WebApp.showPopup({
           title: '价格无效',
           message: '请输入有效的价格',
           buttons: [{ type: 'ok' }]
@@ -136,8 +136,8 @@ export default function MyResalesPage() {
       const data = await response.json()
       
       if (data.success) {
-        if (tg) {
-          tg.showPopup({
+        if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showPopup({
             title: '创建成功！',
             message: '转售单创建成功！',
             buttons: [{ type: 'ok' }]
@@ -149,8 +149,8 @@ export default function MyResalesPage() {
         setPricePerShare('')
         loadMyData() // 刷新数据
       } else {
-        if (tg) {
-          tg.showPopup({
+        if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showPopup({
             title: '创建失败',
             message: data.error || '创建转售单失败',
             buttons: [{ type: 'ok' }]
@@ -159,8 +159,8 @@ export default function MyResalesPage() {
       }
     } catch (err) {
       console.error('Create resale error:', err)
-      if (tg) {
-        tg.showPopup({
+      if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+        window.Telegram.WebApp.showPopup({
           title: '错误',
           message: '网络错误，请重试',
           buttons: [{ type: 'ok' }]
@@ -190,8 +190,8 @@ export default function MyResalesPage() {
       const data = await response.json()
       
       if (data.success) {
-        if (tg) {
-          tg.showPopup({
+        if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showPopup({
             title: '取消成功！',
             message: '转售单已取消',
             buttons: [{ type: 'ok' }]
@@ -199,8 +199,8 @@ export default function MyResalesPage() {
         }
         loadMyData() // 刷新数据
       } else {
-        if (tg) {
-          tg.showPopup({
+        if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showPopup({
             title: '取消失败',
             message: data.error || '取消失败',
             buttons: [{ type: 'ok' }]
@@ -209,8 +209,8 @@ export default function MyResalesPage() {
       }
     } catch (err) {
       console.error('Cancel resale error:', err)
-      if (tg) {
-        tg.showPopup({
+      if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+        window.Telegram.WebApp.showPopup({
           title: '错误',
           message: '网络错误，请重试',
           buttons: [{ type: 'ok' }]
