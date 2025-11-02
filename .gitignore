@@ -895,17 +895,3 @@
 # uploads/
 # downloads/
 
-# MiniMax Agent specific directories
-memory/
-external_api/
-browser/
-extract/
-.pytest_cache/
-__pycache__/
-
-# Workspace and development files
-.workspace/
-.vscode/
-.tmp/
-memories/
-
