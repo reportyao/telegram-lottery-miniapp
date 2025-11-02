@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Lottery Platform",
+    "description": "Online Lottery Platform"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "my": "My",
+    "orders": "Orders",
+    "referral": "Referral"
+  },
+  "home": {
+    "welcome": "Welcome to Lottery Platform",
+    "hot_products": "Hot Products",
+    "view_all": "View All"
+  },
+  "product": {
+    "price": "Price",
+    "stock": "Stock",
+    "shares": "Shares",
+    "per_share": "Per Share",
+    "participate": "Participate",
+    "sold": "Sold",
+    "remaining": "Remaining"
+  },
+  "lottery": {
+    "total_shares": "Total Shares",
+    "sold_shares": "Sold Shares",
+    "price_per_share": "Price Per Share",
+    "select_shares": "Select Shares",
+    "confirm_participate": "Confirm",
+    "status": {
+      "active": "Active",
+      "ready_to_draw": "Ready to Draw",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "user": {
+    "balance": "Balance",
+    "total_spent": "Total Spent",
+    "total_wins": "Total Wins",
+    "participations": "Participations",
+    "referrals": "Referrals",
+    "profile": "Profile",
+    "transactions": "Transactions",
+    "my_wins": "My Wins"
+  },
+  "order": {
+    "create": "Create Order",
+    "status": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "referral": {
+    "title": "Invite Friends",
+    "your_code": "My Code",
+    "invite_link": "Invite Link",
+    "total_referrals": "Total Referrals",
+    "total_rewards": "Total Rewards",
+    "copy": "Copy",
+    "share": "Share"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "submit": "Submit",
+    "retry": "Retry",
+    "insufficient_balance": "Insufficient Balance",
+    "operation_success": "Operation Success",
+    "operation_failed": "Operation Failed"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "夺宝平台",
+    "description": "在线夺宝抽奖平台"
+  },
+  "nav": {
+    "home": "首页",
+    "products": "商品",
+    "my": "我的",
+    "orders": "订单",
+    "referral": "推荐"
+  },
+  "home": {
+    "welcome": "欢迎来到夺宝平台",
+    "hot_products": "热门商品",
+    "view_all": "查看全部"
+  },
+  "product": {
+    "price": "价格",
+    "stock": "库存",
+    "shares": "份数",
+    "per_share": "每份",
+    "participate": "参与夺宝",
+    "sold": "已售",
+    "remaining": "剩余"
+  },
+  "lottery": {
+    "total_shares": "总份数",
+    "sold_shares": "已售份数",
+    "price_per_share": "每份价格",
+    "select_shares": "选择份数",
+    "confirm_participate": "确认参与",
+    "status": {
+      "active": "进行中",
+      "ready_to_draw": "待开奖",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    }
+  },
+  "user": {
+    "balance": "余额",
+    "total_spent": "总消费",
+    "total_wins": "中奖次数",
+    "participations": "参与次数",
+    "referrals": "推荐人数",
+    "profile": "个人信息",
+    "transactions": "交易记录",
+    "my_wins": "我的中奖"
+  },
+  "order": {
+    "create": "创建订单",
+    "status": {
+      "pending": "待支付",
+      "paid": "已支付",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    }
+  },
+  "referral": {
+    "title": "邀请好友",
+    "your_code": "我的邀请码",
+    "invite_link": "邀请链接",
+    "total_referrals": "邀请人数",
+    "total_rewards": "奖励总额",
+    "copy": "复制",
+    "share": "分享"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "confirm": "确认",
+    "cancel": "取消",
+    "close": "关闭",
+    "save": "保存",
+    "submit": "提交",
+    "retry": "重试",
+    "insufficient_balance": "余额不足",
+    "operation_success": "操作成功",
+    "operation_failed": "操作失败"
+  }
+}
