@@ -9,10 +9,10 @@ const nextConfig = {
   },
   reactStrictMode: true,
   
-  // 性能优化配置
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['@supabase/supabase-js', '@telegram-apps/sdk'],
+  // 性能优化配置 (Next.js 12 兼容)
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   
   // 压缩配置
