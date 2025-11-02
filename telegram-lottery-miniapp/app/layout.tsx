@@ -113,8 +113,8 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         {/* 预连接优化 */}
-        <link rel="preconnect" href="https://mftfgofnosakobjfpzss.supabase.co" />
-        <link rel="dns-prefetch" href="https://mftfgofnosakobjfpzss.supabase.co" />
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL || ""} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL || ""} />
       </head>
       <body className={`${inter.className} antialiased telegram-theme`}>
         <ErrorBoundary>

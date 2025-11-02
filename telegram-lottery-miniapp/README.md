@@ -87,9 +87,23 @@ pnpm install
 
 ### 2. 配置环境变量
 
-Supabase凭证已硬编码在代码中（生产环境建议使用环境变量）：
-- Supabase URL: `https://mftfgofnosakobjfpzss.supabase.co`
-- Supabase Anon Key: 已配置
+### 2. 配置环境变量
+
+在项目根目录创建 `.env.local` 文件：
+```bash
+# Supabase配置 - 请替换为您的实际值
+NEXT_PUBLIC_SUPABASE_URL=您的Supabase项目URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=您的Supabase匿名密钥
+
+# Telegram Bot配置（可选）
+NEXT_PUBLIC_TELEGRAM_BOT_TOKEN=您的Telegram Bot Token
+
+# 应用配置
+NODE_ENV=production
+PORT=3000
+```
+
+⚠️ **重要**: 生产环境必须使用环境变量，不要在代码中硬编码凭证！
 
 ### 3. 运行开发服务器
 
