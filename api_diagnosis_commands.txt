@@ -1,0 +1,38 @@
+# 深度诊断API 404问题的完整命令
+
+echo "=== 1. 检查API文件是否存在 ==="
+ls -la app/api/
+echo ""
+
+echo "=== 2. 检查API文件内容 ==="
+echo "健康检查API："
+cat app/api/health/route.ts
+echo ""
+echo "商品列表API："
+cat app/api/get-products/route.ts
+echo ""
+
+echo "=== 3. 检查Next.js配置 ==="
+echo "package.json中的Next.js版本："
+cat package.json | grep -A5 -B5 next
+echo ""
+
+echo "=== 4. 检查tsconfig.json ==="
+cat tsconfig.json
+echo ""
+
+echo "=== 5. 检查项目目录结构 ==="
+ls -la
+echo ""
+
+echo "=== 6. 检查Next.js启动日志 ==="
+tail -20 app.log
+echo ""
+
+echo "=== 7. 手动测试API端点获取详细错误信息 ==="
+echo "测试健康检查API（获取详细响应）："
+curl -v http://localhost:3000/api/health 2>&1 | head -20
+echo ""
+
+echo "=== 8. 检查Next.js开发服务器是否有错误 ==="
+ps aux | grep "npm run dev" | grep -v grep
