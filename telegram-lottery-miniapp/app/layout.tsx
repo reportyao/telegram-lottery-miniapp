@@ -51,35 +51,6 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="afterInteractive"
-        />
-        {/* 预连接优化 */}
-        <link rel="preconnect" href="https://mftfgofnosakobjfpzss.supabase.co" />
-        <link rel="dns-prefetch" href="https://mftfgofnosakobjfpzss.supabase.co" />
-      </head>
-      <body className={`${inter.className} antialiased telegram-theme`}>
-        <ErrorBoundary>
-          <TelegramWebAppInit />
-          <NetworkStatusIndicator />
-          <div className="min-h-screen telegram-theme">
-            {children}
-          </div>
-        </ErrorBoundary>
-      </body>
-    </html>
-  )
-}
-
 // Telegram WebApp 初始化组件
 function TelegramWebAppInit() {
   'use client'
@@ -126,5 +97,34 @@ function NetworkStatusIndicator() {
     <div className="fixed top-0 left-0 right-0 bg-orange-500 text-white text-center py-2 z-50 text-sm">
       ⚠️ No internet connection. Some features may not work properly.
     </div>
+  )
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" className="scroll-smooth">
+      <head>
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="afterInteractive"
+        />
+        {/* 预连接优化 */}
+        <link rel="preconnect" href="https://mftfgofnosakobjfpzss.supabase.co" />
+        <link rel="dns-prefetch" href="https://mftfgofnosakobjfpzss.supabase.co" />
+      </head>
+      <body className={`${inter.className} antialiased telegram-theme`}>
+        <ErrorBoundary>
+          <TelegramWebAppInit />
+          <NetworkStatusIndicator />
+          <div className="min-h-screen telegram-theme">
+            {children}
+          </div>
+        </ErrorBoundary>
+      </body>
+    </html>
   )
 }

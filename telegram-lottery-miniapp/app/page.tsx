@@ -21,6 +21,18 @@ export default function HomePage() {
     trackPerformance()
   }, [])
 
+  // 根据网络状况优化产品数据
+  const optimizeProductsForNetwork = (products: Product[], networkType: string): Product[] => {
+    // 慢网络环境下的优化
+    const slowNetworks = ['slow-2g', '2g']
+    
+    if (slowNetworks.includes(networkType)) {
+      return products.slice(0, 6) // 只加载前6个产品
+    }
+    
+    return products
+  }
+
   const initializeApp = async () => {
     try {
       setLoading(true)
@@ -71,18 +83,6 @@ export default function HomePage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  // 根据网络状况优化产品数据
-  const optimizeProductsForNetwork = (products: Product[], networkType: string): Product[] => {
-    // 慢网络环境下的优化
-    const slowNetworks = ['slow-2g', '2g']
-    
-    if (slowNetworks.includes(networkType)) {
-      return products.slice(0, 6) // 只加载前6个产品
-    }
-    
-    return products
   }
 
   // 重试机制
