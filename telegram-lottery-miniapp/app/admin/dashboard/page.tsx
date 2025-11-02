@@ -35,13 +35,21 @@ export default function AdminDashboard() {
       
       const url = `${SUPABASE_URL}/functions/v1/admin-api?resource=stats&action=dashboard`
       const response = await fetch(url)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
 
       if (result.data) {
         setStats(result.data)
+      } else if (result.error) {
+        console.error('API Error:', result.error)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Load stats error:', err)
+      // 可以添加错误状态处理
     } finally {
       setLoading(false)
     }
@@ -106,7 +114,7 @@ export default function AdminDashboard() {
             />
             <StatCard
               title="Total Revenue"
-              value={`$${stats.total_revenue.toFixed(2)}`}
+              value={`$${typeof stats.total_revenue === 'string' ? parseFloat(stats.total_revenue).toFixed(2) : stats.total_revenue?.toFixed(2) || '0.00'}`}
               icon="💰"
               color="red"
             />
@@ -147,7 +155,7 @@ export default function AdminDashboard() {
             </div>
           </Link>
 
-          <Link href="/admin/orders">
+          <Link href="/orders">
             <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer">
               <div className="text-4xl mb-3">📋</div>
               <h3 className="text-lg font-bold mb-2">Orders</h3>

@@ -37,13 +37,21 @@ export default function AdminPostsPage() {
       setLoading(true)
       const url = `${SUPABASE_URL}/functions/v1/admin-api?resource=posts&action=pending`
       const response = await fetch(url)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
 
       if (result.data?.posts) {
         setPosts(result.data.posts)
+      } else if (result.error) {
+        console.error('API Error:', result.error)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Load posts error:', err)
+      // 可以添加错误状态处理
     } finally {
       setLoading(false)
     }

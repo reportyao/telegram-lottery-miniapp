@@ -34,13 +34,21 @@ export default function AdminUsersPage() {
       setLoading(true)
       const url = `${SUPABASE_URL}/functions/v1/admin-api?resource=users&action=list&limit=100`
       const response = await fetch(url)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
 
       if (result.data?.users) {
         setUsers(result.data.users)
+      } else if (result.error) {
+        console.error('API Error:', result.error)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Load users error:', err)
+      // 可以添加错误状态处理
     } finally {
       setLoading(false)
     }
@@ -100,7 +108,10 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-green-600">
-                      ${parseFloat(user.balance.toString()).toFixed(2)}
+                      ${typeof user.balance === 'string'
+                        ? parseFloat(user.balance).toFixed(2)
+                        : user.balance?.toFixed(2) || '0.00'
+                      }
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

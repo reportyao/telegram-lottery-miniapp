@@ -198,7 +198,7 @@ export default function ResaleMarketPage() {
                 <div>
                   <p className="text-sm text-gray-600">总份额</p>
                   <p className="text-xl font-bold">
-                    {resales.reduce((sum, r) => sum + r.shares_to_sell, 0)}
+                    {resales.reduce((sum, r) => sum + (typeof r.shares_to_sell === 'string' ? parseInt(r.shares_to_sell) : r.shares_to_sell), 0)}
                   </p>
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function ResaleMarketPage() {
                   <p className="text-sm text-gray-600">平均价格</p>
                   <p className="text-xl font-bold">
                     {resales.length > 0 
-                      ? formatCurrency(resales.reduce((sum, r) => sum + r.price_per_share, 0) / resales.length)
+                      ? formatCurrency(resales.reduce((sum, r) => sum + (typeof r.price_per_share === 'string' ? parseFloat(r.price_per_share) : r.price_per_share), 0) / resales.length)
                       : formatCurrency(0)
                     }
                   </p>
@@ -300,15 +300,15 @@ export default function ResaleMarketPage() {
                         <div className="flex items-center space-x-4">
                           <div>
                             <p className="text-sm text-gray-600">剩余份额</p>
-                            <p className="font-bold text-blue-600">{resale.shares_to_sell}</p>
+                            <p className="font-bold text-blue-600">{typeof resale.shares_to_sell === 'string' ? parseInt(resale.shares_to_sell) : resale.shares_to_sell}</p>
                           </div>
                           <div>
                             <p className="text-sm text-gray-600">单价</p>
-                            <p className="font-bold text-green-600">{formatCurrency(resale.price_per_share)}</p>
+                            <p className="font-bold text-green-600">{formatCurrency(typeof resale.price_per_share === 'string' ? parseFloat(resale.price_per_share) : resale.price_per_share)}</p>
                           </div>
                           <div>
                             <p className="text-sm text-gray-600">总价</p>
-                            <p className="font-bold text-purple-600">{formatCurrency(resale.total_amount)}</p>
+                            <p className="font-bold text-purple-600">{formatCurrency(typeof resale.total_amount === 'string' ? parseFloat(resale.total_amount) : resale.total_amount)}</p>
                           </div>
                         </div>
                         
@@ -329,8 +329,8 @@ export default function ResaleMarketPage() {
                               </DialogHeader>
                               <div className="space-y-4">
                                 <div>
-                                  <h4 className="font-semibold">{resale.lottery_round.product.name}</h4>
-                                  <p className="text-sm text-gray-600">卖家: {resale.seller.username}</p>
+                                  <h4 className="font-semibold">{purchaseModal.lottery_round.product.name}</h4>
+                                  <p className="text-sm text-gray-600">卖家: {purchaseModal.seller.username}</p>
                                 </div>
                                 
                                 <div className="space-y-2">
@@ -338,19 +338,19 @@ export default function ResaleMarketPage() {
                                   <Input
                                     type="number"
                                     min="1"
-                                    max={resale.shares_to_sell}
+                                    max={typeof purchaseModal.shares_to_sell === 'string' ? parseInt(purchaseModal.shares_to_sell) : purchaseModal.shares_to_sell}
                                     value={sharesToBuy}
-                                    onChange={(e) => setSharesToBuy(Math.max(1, Math.min(resale.shares_to_sell, parseInt(e.target.value) || 1)))}
+                                    onChange={(e) => setSharesToBuy(Math.max(1, Math.min(typeof purchaseModal.shares_to_sell === 'string' ? parseInt(purchaseModal.shares_to_sell) : purchaseModal.shares_to_sell, parseInt(e.target.value) || 1)))}
                                   />
                                   <p className="text-sm text-gray-600">
-                                    可购买: {resale.shares_to_sell} 份
+                                    可购买: {typeof purchaseModal.shares_to_sell === 'string' ? parseInt(purchaseModal.shares_to_sell) : purchaseModal.shares_to_sell} 份
                                   </p>
                                 </div>
                                 
                                 <div className="bg-gray-50 p-4 rounded-lg space-y-2">
                                   <div className="flex justify-between">
                                     <span>单价:</span>
-                                    <span>{formatCurrency(resale.price_per_share)}</span>
+                                    <span>{formatCurrency(typeof purchaseModal.price_per_share === 'string' ? parseFloat(purchaseModal.price_per_share) : purchaseModal.price_per_share)}</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span>份数:</span>
@@ -358,21 +358,24 @@ export default function ResaleMarketPage() {
                                   </div>
                                   <div className="flex justify-between font-bold text-lg">
                                     <span>总计:</span>
-                                    <span>{formatCurrency(sharesToBuy * resale.price_per_share)}</span>
+                                    <span>{formatCurrency(sharesToBuy * (typeof purchaseModal.price_per_share === 'string' ? parseFloat(purchaseModal.price_per_share) : purchaseModal.price_per_share))}</span>
                                   </div>
                                 </div>
                                 
                                 <div className="flex space-x-2">
                                   <Button 
                                     onClick={handlePurchase}
-                                    disabled={purchasing || sharesToBuy > resale.shares_to_sell}
+                                    disabled={purchasing || sharesToBuy > (typeof purchaseModal.shares_to_sell === 'string' ? parseInt(purchaseModal.shares_to_sell) : purchaseModal.shares_to_sell)}
                                     className="flex-1"
                                   >
                                     {purchasing ? '购买中...' : '确认购买'}
                                   </Button>
                                   <Button 
                                     variant="outline"
-                                    onClick={() => setPurchaseModal(null)}
+                                    onClick={() => {
+                                      setPurchaseModal(null)
+                                      setSharesToBuy(1)
+                                    }}
                                   >
                                     取消
                                   </Button>

@@ -72,7 +72,11 @@ export default function ProfilePage() {
       <div className="p-4">
         <div className="bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg p-6 shadow-lg">
           <p className="text-sm opacity-90 mb-2">Current Balance</p>
-          <p className="text-4xl font-bold">${user ? parseFloat(user.balance.toString()).toFixed(2) : '0.00'}</p>
+          <p className="text-4xl font-bold">${user ? 
+            typeof user.balance === 'string' 
+              ? parseFloat(user.balance).toFixed(2)
+              : user.balance?.toFixed(2) || '0.00'
+            : '0.00'}</p>
           <Link href="/topup">
             <button className="mt-4 bg-white text-primary px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
               Top Up

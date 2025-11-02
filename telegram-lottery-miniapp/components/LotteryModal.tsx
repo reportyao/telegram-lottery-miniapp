@@ -129,7 +129,17 @@ export default function LotteryModal({ product, lotteryRound, user, onClose }: L
               min="1"
               max={Math.min(availableShares, 50)}
               value={shares}
-              onChange={(e) => setShares(Math.max(1, Math.min(parseInt(e.target.value) || 1, availableShares, 50)))}
+              onChange={(e) => {
+                const value = e.target.value
+                if (value === '') {
+                  setShares(1)
+                } else {
+                  const numValue = parseInt(value)
+                  if (!isNaN(numValue)) {
+                    setShares(Math.max(1, Math.min(numValue, availableShares, 50)))
+                  }
+                }
+              }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>

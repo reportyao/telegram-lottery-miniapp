@@ -110,7 +110,10 @@ export default function OrdersPage() {
                   <div>
                     <span className="text-gray-600">Amount:</span>
                     <span className="ml-2 font-semibold text-primary">
-                      ${parseFloat(participation.amount_paid).toFixed(2)}
+                      ${typeof participation.amount_paid === 'string' 
+                        ? parseFloat(participation.amount_paid).toFixed(2)
+                        : participation.amount_paid?.toFixed(2) || '0.00'
+                      }
                     </span>
                   </div>
                 </div>

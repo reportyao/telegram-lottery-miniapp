@@ -38,13 +38,21 @@ export default function AdminLotteryRoundsPage() {
       setLoading(true)
       const url = `${SUPABASE_URL}/functions/v1/admin-api?resource=lottery_rounds&action=list`
       const response = await fetch(url)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
 
       if (result.data?.rounds) {
         setRounds(result.data.rounds)
+      } else if (result.error) {
+        console.error('API Error:', result.error)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Load rounds error:', err)
+      // 可以添加错误状态处理
     } finally {
       setLoading(false)
     }

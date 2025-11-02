@@ -9,7 +9,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   
-  // 性能优化配置 (Next.js 12 兼容)
+  // 性能优化配置
   swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -18,10 +18,14 @@ const nextConfig = {
   // 压缩配置
   compress: true,
   
-  // 编译优化
-  
   // 预取配置
   generateEtags: false,
+  
+  // 实验性功能 (Next.js 14 兼容)
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react'],
+  },
   
   // 弱网优化 - 增加超时时间
   async headers() {
@@ -37,6 +41,9 @@ const nextConfig = {
       },
     ]
   },
+  
+  // 输出配置
+  output: 'standalone',
 }
 
 module.exports = nextConfig

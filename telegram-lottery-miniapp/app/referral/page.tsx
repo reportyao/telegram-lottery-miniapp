@@ -43,7 +43,12 @@ export default function ReferralPage() {
 
       if (!error && data) {
         setReferrals(data)
-        const total = data.reduce((sum, ref) => sum + parseFloat(ref.reward_amount || 0), 0)
+        const total = data.reduce((sum, ref) => {
+          const amount = typeof ref.reward_amount === 'string' 
+            ? parseFloat(ref.reward_amount)
+            : ref.reward_amount || 0
+          return sum + amount
+        }, 0)
         setTotalRewards(total)
       }
     } catch (err) {
@@ -159,7 +164,10 @@ export default function ReferralPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-green-600">
-                      +${parseFloat(referral.reward_amount || 0).toFixed(2)}
+                      +${typeof referral.reward_amount === 'string'
+                        ? parseFloat(referral.reward_amount).toFixed(2)
+                        : (referral.reward_amount || 0).toFixed(2)
+                      }
                     </p>
                     <span className={`text-xs ${
                       referral.status === 'active' ? 'text-green-600' : 'text-gray-600'

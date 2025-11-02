@@ -75,9 +75,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://mftfgofnosakobjfpzss.supabase.co" />
       </head>
       <body className={`${inter.className} antialiased telegram-theme`}>
+        <NetworkStatusIndicator />
         <div className="min-h-screen telegram-theme">
-          {/* 网络状态指示器 */}
-          <NetworkStatusIndicator />
           {children}
         </div>
       </body>

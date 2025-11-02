@@ -74,7 +74,10 @@ export default function TopUpPage() {
         <h1 className="text-2xl font-bold">Top Up Balance</h1>
         {user && (
           <p className="text-sm opacity-90 mt-2">
-            Current Balance: ${parseFloat(user.balance.toString()).toFixed(2)}
+            Current Balance: ${typeof user.balance === 'string'
+              ? parseFloat(user.balance).toFixed(2)
+              : user.balance?.toFixed(2) || '0.00'
+            }
           </p>
         )}
       </div>
