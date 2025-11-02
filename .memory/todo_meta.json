@@ -3,37 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "创建转售功能数据库表",
-        "details": "1. 创建resales表存储转售信息 2. 创建resale_transactions表存储转售交易记录 3. 更新participations表添加可转售状态",
-        "status": "completed",
+        "content": "代码审查和问题诊断",
+        "details": "1. 检查当前工作目录的项目结构\n2. 对比GitHub上的完整代码\n3. 识别缺失的文件和配置\n4. 分析lib/supabase.ts的ANON_KEY语法问题\n5. 审查缺失的hooks和组件",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "开发转售功能的Edge Function",
-        "details": "1. 创建resale-api Edge Function处理转售相关操作 2. 支持创建转售单、购买转售、取消转售等操作",
-        "status": "completed",
+        "content": "修复核心配置文件问题",
+        "details": "1. 修复lib/supabase.ts的ANON_KEY语法错误\n2. 确保所有Supabase配置正确\n3. 创建缺失的lib目录和配置文件\n4. 验证路径配置的准确性",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "创建转售功能前端界面",
-        "details": "1. 创建/my-resales页面显示用户转售列表 2. 创建/resale-market页面显示转售市场 3. 添加转售按钮和模态框",
-        "status": "completed",
+        "content": "修复hooks和组件依赖",
+        "details": "1. 创建缺失的@/hooks/useTelegram模块\n2. 修复my-resales页面的组件引用\n3. 修复resale-market页面的hooks引用\n4. 确保所有页面组件正确导入",
+        "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "增强Bot注册和消息功能",
-        "details": "1. 实现用户注册Bot命令处理 2. 添加消息通知功能(中奖、充值等) 3. 实现Bot与Web App的数据同步",
-        "status": "completed",
-        "priority": "high"
+        "content": "验证和测试修复效果",
+        "details": "1. 检查项目构建是否成功\n2. 验证所有页面路由正常\n3. 确认API调用配置正确\n4. 测试基础功能运行",
+        "status": "pending",
+        "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "整体逻辑检查和bug修复",
-        "details": "1. 检查所有API端点逻辑 2. 修复可能的内存泄漏和并发问题 3. 优化错误处理机制 4. 更新文档",
-        "status": "completed",
+        "content": "更新GitHub代码",
+        "details": "1. 将修复后的代码推送到GitHub\n2. 更新相关文档说明\n3. 确保代码版本一致",
+        "status": "pending",
         "priority": "medium"
       }
     }
