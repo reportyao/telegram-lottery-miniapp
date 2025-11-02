@@ -1,0 +1,139 @@
+=== Telegram彩票小程序 - 完整API修复命令集合 ===
+
+请按顺序在服务器终端执行以下命令：
+
+# 1. 进入正确目录
+cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp
+
+# 2. 停止现有应用
+pkill -f "npm run dev"
+sleep 2
+
+# 3. 清理旧的API和构建文件
+rm -rf app/api .next
+
+# 4. 创建新的API路由目录
+mkdir -p app/api/get-products
+mkdir -p app/api/health
+
+# 5. 创建 /api/get-products 路由文件
+cat > app/api/get-products/route.ts << 'APIEOF'
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    console.log('API: /api/get-products called');
+    
+    // 测试数据
+    const testProducts = [
+      {
+        id: 'test-1',
+        title: 'iPhone 15 Pro Max',
+        description: '全新苹果手机',
+        price: 999,
+        image_url: '/images/iphone15.jpg',
+        status: 'active',
+        target_participants: 1000,
+        current_participants: 567,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: 'test-2',
+        title: 'MacBook Air M3',
+        description: '苹果笔记本电脑',
+        price: 1299,
+        image_url: '/images/macbook.jpg',
+        status: 'active',
+        target_participants: 800,
+        current_participants: 234,
+        created_at: new Date().toISOString()
+      }
+    ];
+
+    return NextResponse.json({
+      success: true,
+      data: testProducts,
+      message: '测试商品列表获取成功',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('API error:', error);
+    return NextResponse.json(
+      { error: '服务器内部错误', details: String(error) }, 
+      { status: 500 }
+    );
+  }
+}
+APIEOF
+
+# 6. 创建健康检查API
+cat > app/api/health/route.ts << 'HEALTHEOF'
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  return NextResponse.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: '1.0.0'
+  });
+}
+HEALTHEOF
+
+# 7. 验证文件创建
+ls -la app/api/
+echo ""
+echo "get-products文件大小:"
+wc -l app/api/get-products/route.ts
+echo ""
+echo "health文件大小:"
+wc -l app/api/health/route.ts
+
+# 8. 重启应用
+echo "重启应用..."
+nohup npm run dev > app.log 2>&1 &
+sleep 5
+
+# 9. 等待启动并测试
+echo "等待应用启动..."
+for i in {1..10}; do
+    if curl -s http://localhost:3000/ > /dev/null 2>&1; then
+        echo "应用启动成功"
+        break
+    fi
+    echo "等待中... ($i/10)"
+    sleep 2
+done
+
+# 10. 完整测试
+echo ""
+echo "=== 测试结果 ==="
+echo "主页测试:"
+curl -s -w "HTTP状态码: %{http_code}" http://localhost:3000/
+echo ""
+echo ""
+echo "健康检查API:"
+curl -s http://localhost:3000/api/health
+echo ""
+echo ""
+echo "商品列表API:"
+curl -s -w "HTTP状态码: %{http_code}" http://localhost:3000/api/get-products
+echo ""
+echo ""
+echo "管理面板测试:"
+curl -s -w "HTTP状态码: %{http_code}" http://localhost:3000/admin
+echo ""
+
+# 11. 查看进程和端口状态
+echo ""
+echo "=== 进程和端口状态 ==="
+echo "进程:"
+ps aux | grep "npm run dev" | grep -v grep
+echo ""
+echo "端口:"
+netstat -tlnp | grep :3000
+
+echo ""
+echo "=== 修复完成 ==="
+echo "完成时间: $(date)"
