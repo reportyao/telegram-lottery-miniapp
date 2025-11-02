@@ -4,7 +4,6 @@ import asyncio
 import json
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-import aiohttp
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 import supabase
@@ -13,7 +12,7 @@ import supabase
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY')
-WEB_APP_URL = os.getenv('WEB_APP_URL', 'https://your-domain.vercel.app')
+WEB_APP_URL = os.getenv('WEB_APP_URL', 'https://telegram-miniapp-demo.vercel.app')
 
 # 日志配置
 logging.basicConfig(
@@ -89,6 +88,9 @@ class TelegramBot:
         
         # Supabase 客户端
         self.supabase = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
+        
+        # 后台任务管理
+        self.background_tasks: set[asyncio.Task] = set()
     
     def setup_handlers(self):
         """设置消息处理器"""
@@ -342,11 +344,26 @@ class TelegramBot:
     
     def start_background_tasks(self):
         """启动后台任务"""
-        # 每小时检查一次中奖者
-        asyncio.create_task(self.lottery_check_loop())
-        
-        # 每6小时检查一次余额不足的用户
-        asyncio.create_task(self.balance_check_loop())
+        # 检查是否在事件循环中
+        try:
+            loop = asyncio.get_running_loop()
+            # 如果在事件循环中，使用create_task
+            task1 = loop.create_task(self.lottery_check_loop())
+            task2 = loop.create_task(self.balance_check_loop())
+            self.background_tasks.add(task1)
+            self.background_tasks.add(task2)
+            
+            # 为任务添加完成回调，自动从集合中移除
+            def task_done_callback(task):
+                self.background_tasks.discard(task)
+            
+            task1.add_done_callback(task_done_callback)
+            task2.add_done_callback(task_done_callback)
+            
+            logger.info("Background tasks started successfully")
+        except RuntimeError:
+            # 如果不在事件循环中，在run方法中处理
+            logger.info("No running event loop, will start background tasks in run method")
     
     async def lottery_check_loop(self):
         """彩票中奖检查循环"""
@@ -356,7 +373,7 @@ class TelegramBot:
                 await asyncio.sleep(3600)  # 每小时检查一次
             except Exception as e:
                 logger.error(f"Error in lottery check loop: {e}")
-                await asyncio.sleep(3600)
+                await asyncio.sleep(3600)  # 出错时等待后重试
     
     async def balance_check_loop(self):
         """余额检查循环"""
@@ -366,7 +383,7 @@ class TelegramBot:
                 await asyncio.sleep(21600)  # 每6小时检查一次
             except Exception as e:
                 logger.error(f"Error in balance check loop: {e}")
-                await asyncio.sleep(21600)
+                await asyncio.sleep(21600)  # 出错时等待后重试
     
     def run(self):
         """启动Bot"""
@@ -374,7 +391,21 @@ class TelegramBot:
             logger.info("Starting Telegram Bot...")
             
             # 启动后台任务
-            self.start_background_tasks()
+            if not self.background_tasks:
+                # 如果在初始化时没有启动任务，在这里启动
+                task1 = asyncio.create_task(self.lottery_check_loop())
+                task2 = asyncio.create_task(self.balance_check_loop())
+                self.background_tasks.add(task1)
+                self.background_tasks.add(task2)
+                
+                # 添加清理回调
+                def cleanup_tasks(task):
+                    self.background_tasks.discard(task)
+                
+                task1.add_done_callback(cleanup_tasks)
+                task2.add_done_callback(cleanup_tasks)
+                
+                logger.info("Background tasks started in run method")
             
             # 启动轮询
             self.app.run_polling(
@@ -384,7 +415,27 @@ class TelegramBot:
             
         except Exception as e:
             logger.error(f"Error running bot: {e}")
+            # 清理后台任务
+            for task in self.background_tasks:
+                if not task.done():
+                    task.cancel()
             raise
+        finally:
+            # 确保清理所有后台任务
+            self._cleanup_background_tasks()
+    
+    def _cleanup_background_tasks(self):
+        """清理后台任务"""
+        for task in self.background_tasks.copy():
+            if not task.done():
+                task.cancel()
+                # 等待任务结束
+                try:
+                    asyncio.create_task(task)
+                except Exception as e:
+                    logger.warning(f"Error canceling task: {e}")
+        self.background_tasks.clear()
+        logger.info("Background tasks cleaned up")
 
 def main():
     """主函数"""

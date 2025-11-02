@@ -62,7 +62,9 @@ export default function LotteryModal({ product, lotteryRound, user, onClose }: L
       setLoading(false)
       
       // 触发重新加载页面数据
-      window.dispatchEvent(new CustomEvent('lotteryParticipated'))
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('lotteryParticipated'))
+      }
       
       onClose()
     } catch (err: any) {

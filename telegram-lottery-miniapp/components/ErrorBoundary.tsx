@@ -41,12 +41,15 @@ class ErrorBoundary extends Component<Props, State> {
   private reportError = (error: Error, errorInfo: ErrorInfo) => {
     // 这里可以集成错误监控服务，如 Sentry
     try {
+      // 检查是否在客户端环境
+      if (typeof window === 'undefined') return
+      
       const errorReport = {
         message: error.message,
         stack: error.stack,
         componentStack: errorInfo.componentStack,
         timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
         url: window.location.href,
       }
 
@@ -69,7 +72,9 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleReload = () => {
-    window.location.reload()
+    if (typeof window !== 'undefined') {
+      window.location.reload()
+    }
   }
 
   render() {

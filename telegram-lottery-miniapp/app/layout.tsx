@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Script from 'next/script'
 import React from 'react'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const inter = Inter({ 
   subsets: ['latin', 'cyrillic'],
@@ -75,10 +76,12 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://mftfgofnosakobjfpzss.supabase.co" />
       </head>
       <body className={`${inter.className} antialiased telegram-theme`}>
-        <NetworkStatusIndicator />
-        <div className="min-h-screen telegram-theme">
-          {children}
-        </div>
+        <ErrorBoundary>
+          <NetworkStatusIndicator />
+          <div className="min-h-screen telegram-theme">
+            {children}
+          </div>
+        </ErrorBoundary>
       </body>
     </html>
   )
@@ -91,6 +94,9 @@ function NetworkStatusIndicator() {
   const [isOnline, setIsOnline] = React.useState(true)
   
   React.useEffect(() => {
+    // 检查是否在客户端环境
+    if (typeof window === 'undefined') return
+    
     const updateOnlineStatus = () => setIsOnline(navigator.onLine)
     
     window.addEventListener('online', updateOnlineStatus)
@@ -99,8 +105,10 @@ function NetworkStatusIndicator() {
     updateOnlineStatus()
     
     return () => {
-      window.removeEventListener('online', updateOnlineStatus)
-      window.removeEventListener('offline', updateOnlineStatus)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('online', updateOnlineStatus)
+        window.removeEventListener('offline', updateOnlineStatus)
+      }
     }
   }, [])
   
