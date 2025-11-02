@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# 第一步：创建验证脚本
+cat > ~/verify_app.sh << 'EOF'
+#!/bin/bash
+
 echo "=== Telegram 彩票小程序验证报告 ==="
 echo "生成时间: $(date '+%Y-%m-%d %H:%M:%S')"
 echo ""
@@ -27,10 +31,10 @@ if [ -f ".env.local" ]; then
 else
     echo -e "${RED}❌ .env.local 文件不存在${NC}"
     echo "💡 正在创建环境变量文件..."
-    cat > .env.local << 'EOF'
+    cat > .env.local << 'ENVEOF'
 NEXT_PUBLIC_SUPABASE_URL=https://mftfgofnosakobjfpzss.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mdGZnb2Zub3Nha29iamZwenNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwNDM4OTgsImV4cCI6MjA3NzYxOTg5OH0.9TYA-VqkitQayTkS4IXwOW4aqQ3aa2UKPH2IqBddbJ8
-EOF
+ENVEOF
     echo -e "${GREEN}✅ 环境变量文件已创建${NC}"
 fi
 echo ""
@@ -41,7 +45,6 @@ if [ ! -z "$npm_process" ]; then
     echo -e "${GREEN}✅ npm 开发服务器正在运行${NC}"
     echo "进程信息:"
     ps aux | grep "npm run dev" | grep -v grep
-    # 获取进程ID
     npm_pid=$(ps aux | grep "npm run dev" | grep -v grep | awk '{print $2}' | head -1)
     echo "进程ID: $npm_pid"
 else
@@ -49,7 +52,7 @@ else
     echo "💡 正在启动应用..."
     nohup npm run dev >> app.log 2>&1 &
     sleep 5
-    echo "应用已启动，PID: $!"
+    echo "应用已启动"
 fi
 echo ""
 
@@ -96,20 +99,12 @@ rm -f /tmp/admin_response.txt
 echo ""
 
 echo "=== 验证总结 ==="
-# 检查所有关键项目
 checks_passed=0
 total_checks=4
 
-# 环境变量检查
 if [ -f ".env.local" ]; then ((checks_passed++)); fi
-
-# 进程检查
 if [ ! -z "$npm_process" ]; then ((checks_passed++)); fi
-
-# 端口检查
 if [ ! -z "$port_3000" ]; then ((checks_passed++)); fi
-
-# API检查
 if [ "$api_response" = "200" ]; then ((checks_passed++)); fi
 
 echo "通过检查: $checks_passed/$total_checks"
@@ -142,3 +137,8 @@ fi
 
 echo ""
 echo "✅ 验证脚本执行完成！"
+EOF
+
+# 第二步：执行验证
+chmod +x ~/verify_app.sh
+~/verify_app.sh
