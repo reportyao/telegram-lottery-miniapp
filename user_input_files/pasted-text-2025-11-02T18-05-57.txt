@@ -1,0 +1,86 @@
+# 后台启动应用（不会被Ctrl+C中断）
+rm -rf .next
+export PORT=3001
+nohup npm run dev > app_3001.log 2>&1 &
+
+echo "应用启动中..."
+sleep 10
+
+# 测试API
+echo "=== 测试健康检查API ==="
+curl http://localhost:3001/api/health
+
+echo ""
+echo "=== 测试商品列表API ==="
+curl http://localhost:3001/api/get-products
+
+echo ""
+echo "=== 查看应用日志 ==="
+tail -30 app_3001.log
+[1] 896495
+应用启动中...
+=== 测试健康检查API ===
+{"status":"healthy","timestamp":"2025-11-02T18:03:50.916Z","message":"API服务正常运行","port":"3000","version":"1.0.0"}
+=== 测试商品列表API ===
+{"success":true,"data":[{"id":"1","title":"iPhone 15 Pro Max","price":9999,"description":"最新款苹果手机"},{"id":"2","title":"MacBook Air M3","price":8999,"description":"轻薄便携笔记本"},{"id":"3","title":"AirPods Pro 3","price":1899,"description":"主动降噪无线耳机"}],"message":"商品列表获取成功","count":3}
+=== 查看应用日志 ===
+nohup: ignoring input
+
+> telegram-lottery-miniapp@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · optimizeCss
+
+ ✓ Starting...
+ ✓ Ready in 1777ms
+ ○ Compiling /api/health ...
+ ✓ Compiled /api/health in 655ms (56 modules)
+🚀 健康检查API被调用 - 时间: 2025-11-02T18:03:50.915Z
+ GET /api/health 200 in 766ms
+ ✓ Compiled /api/get-products in 74ms (58 modules)
+🚀 商品列表API被调用 - 时间: 2025-11-02T18:03:51.072Z
+ GET /api/get-products 200 in 141ms
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# ^C
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp && \
+rm -rf .next && \
+export PORT=3001 && \
+nohup npm run dev > app_3001.log 2>&1 & \
+sleep 10 && \
+echo "=== 健康检查API ===" && \
+curl http://localhost:3001/api/health && \
+echo "" && echo "=== 商品列表API ===" && \
+curl http://localhost:3001/api/get-products && \
+echo "" && echo "=== 应用日志 ===" && \
+tail -20 app_3001.log
+[2] 896830
+[2]+  Done                    cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp && rm -rf .next && export PORT=3001 && nohup npm run dev > app_3001.log 2>&1
+=== 健康检查API ===
+<!DOCTYPE html><html id="__next_error__"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack.js"/><script src="/_next/static/chunks/main-app.js" async=""></script><script src="/_next/static/chunks/app-pages-internals.js" async=""></script><meta name="next-error" content="not-found"/><meta name="robots" content="noindex"/><title>Lottery Platform - Telegram MiniApp</title><meta name="description" content="Online lottery platform for Tajikistan"/><meta name="author" content="MiniMax Agent"/><meta name="keywords" content="lottery,telegram,miniapp,tajikistan"/><meta name="creator" content="MiniMax Agent"/><meta name="publisher" content="MiniMax Agent"/><meta name="robots" content="index, follow"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="default"/><meta property="og:title" content="Lottery Platform - Telegram MiniApp"/><meta property="og:description" content="Online lottery platform for Tajikistan"/><meta property="og:site_name" content="Lottery Platform"/><meta property="og:locale" content="en_US"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Lottery Platform - Telegram MiniApp"/><meta name="twitter:description" content="Online lottery platform for Tajikistan"/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills.js" noModule=""></script></head><body><script src="/_next/static/chunks/webpack.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/21350d82a1f187e9-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n3:HL[\"/_next/static/css/app/layout.css?v=1762106737867\",\"style\"]\n0:D{\"name\":\"r2\",\"env\":\"Server\"}\n"])</script><script>self.__next_f.push([1,"4:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n7:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n8:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\na:I[\"(app-pages-browser)/./node_modules/next/dist/client/script.js\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"\"]\nd:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n5:D{\"name\":\"\",\"env\":\"Server\"}\n6:D{\"name\":\"NotFound\",\"env\":\"Server\"}\n6:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]]\n9:D{\"name\":\"RootLayout\",\"env\":\"Server\"}\nb:D{\"name\":\"rQ\",\"env\":\"Server\"}\nb:[\"$\",\"meta\",null,{\"name\":\"robots\",\"content\":\"noindex\"}]\nc:D{\"name\":\"\",\"env\":\"Serve"])</script><script>self.__next_f.push([1,"r\"}\ne:[]\n0:[\"$\",\"$L4\",null,{\"buildId\":\"development\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"api\",\"health\"],\"initialTree\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{},[[\"$L5\",\"$6\",null],null],null]},[null,[\"$\",\"$L7\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"/_not-found\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/app/layout.css?v=1762106737867\",\"precedence\":\"next_static/css/app/layout.css\",\"crossOrigin\":\"$undefined\"}]],\"$L9\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[\"$b\",\"$Lc\"],\"globalErrorComponent\":\"$d\",\"missingSlots\":\"$We\"}]\n"])</script><script>self.__next_f.push([1,"9:E{\"digest\":\"3173459495\",\"message\":\"Event handlers cannot be passed to Client Component props.\\n  \u003c... src=... strategy=... onLoad={function onLoad}\u003e\\n                                   ^^^^^^^^^^^^^^^^^\\nIf you need interactivity, consider converting part of this to a Client Component.\",\"stack\":\"Error: Event handlers cannot be passed to Client Component props.\\n  \u003c... src=... strategy=... onLoad={function onLoad}\u003e\\n                                   ^^^^^^^^^^^^^^^^^\\nIf you need interactivity, consider converting part of this to a Client Component.\\n    at eF (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:272472)\\n    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:266015\\n    at Object.toJSON (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:266479)\\n    at stringify (\u003canonymous\u003e)\\n    at eq (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:274847)\\n    at ej (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:264992)\\n    at e_ (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:264034)\\n    at e (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:268296)\\n    at eF (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:268784)\\n    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:266015\\n    at Array.toJSON (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:266479)\\n    at stringify (\u003canonymous\u003e)\\n    at eq (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:274847)\\n    at eJ (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:275365)\\n    at Timeout._onTimeout (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:265152)\\n    at listOnTimeout (node:internal/timers:581:17)\\n    at process.processTimers (node:internal/timers:519:7)\"}\n"])</script><script>self.__next_f.push([1,"c:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"Lottery Platform - Telegram MiniApp\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Online lottery platform for Tajikistan\"}],[\"$\",\"meta\",\"4\",{\"name\":\"author\",\"content\":\"MiniMax Agent\"}],[\"$\",\"meta\",\"5\",{\"name\":\"keywords\",\"content\":\"lottery,telegram,miniapp,tajikistan\"}],[\"$\",\"meta\",\"6\",{\"name\":\"creator\",\"content\":\"MiniMax Agent\"}],[\"$\",\"meta\",\"7\",{\"name\":\"publisher\",\"content\":\"MiniMax Agent\"}],[\"$\",\"meta\",\"8\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"meta\",\"9\",{\"name\":\"mobile-web-app-capable\",\"content\":\"yes\"}],[\"$\",\"meta\",\"10\",{\"name\":\"apple-mobile-web-app-capable\",\"content\":\"yes\"}],[\"$\",\"meta\",\"11\",{\"name\":\"apple-mobile-web-app-status-bar-style\",\"content\":\"default\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:title\",\"content\":\"Lottery Platform - Telegram MiniApp\"}],[\"$\",\"meta\",\"13\",{\"property\":\"og:description\",\"content\":\"Online lottery platform for Tajikistan\"}],[\"$\",\"meta\",\"14\",{\"property\":\"og:site_name\",\"content\":\"Lottery Platform\"}],[\"$\",\"meta\",\"15\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"16\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"17\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"18\",{\"name\":\"twitter:title\",\"content\":\"Lottery Platform - Telegram MiniApp\"}],[\"$\",\"meta\",\"19\",{\"name\":\"twitter:description\",\"content\":\"Online lottery platform for Tajikistan\"}],[\"$\",\"meta\",\"20\",{\"name\":\"next-size-adjust\"}]]\n5:null\n"])</script></body></html>
+=== 商品列表API ===
+{"success":true,"data":[{"id":"1","title":"iPhone 15 Pro Max","price":9999,"description":"最新款苹果手机"},{"id":"2","title":"MacBook Air M3","price":8999,"description":"轻薄便携笔记本"},{"id":"3","title":"AirPods Pro 3","price":1899,"description":"主动降噪无线耳机"}],"message":"商品列表获取成功","count":3}
+=== 应用日志 ===
+ ⚠ Unsupported metadata colorScheme is configured in metadata export in /api/health. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⨯ Error: Event handlers cannot be passed to Client Component props.
+  <... src=... strategy=... onLoad={function onLoad}>
+                                   ^^^^^^^^^^^^^^^^^
+If you need interactivity, consider converting part of this to a Client Component.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+digest: "3173459495"
+ ⨯ Error: Event handlers cannot be passed to Client Component props.
+  <... src=... strategy=... onLoad={function onLoad}>
+                                   ^^^^^^^^^^^^^^^^^
+If you need interactivity, consider converting part of this to a Client Component.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+digest: "3173459495"
+ GET /api/health 404 in 5130ms
+ ✓ Compiled /api/get-products in 77ms (258 modules)
+🚀 商品列表API被调用 - 时间: 2025-11-02T18:05:38.157Z
+ GET /api/get-products 200 in 147ms
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# 
