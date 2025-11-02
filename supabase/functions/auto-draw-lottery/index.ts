@@ -93,6 +93,26 @@ Deno.serve(async (req) => {
                     continue;
                 }
 
+                // 获取当前商品库存
+                const productResponse = await fetch(
+                    `${supabaseUrl}/rest/v1/products?id=eq.${round.product_id}&select=stock`,
+                    { headers }
+                );
+
+                if (!productResponse.ok) {
+                    console.error(`Failed to fetch product ${round.product_id}`);
+                    continue;
+                }
+
+                const products = await productResponse.json();
+                if (!products || products.length === 0) {
+                    console.error(`Product ${round.product_id} not found`);
+                    continue;
+                }
+
+                const currentStock = parseInt(products[0].stock) || 0;
+                const newStock = currentStock - 1;
+
                 // 减少商品库存
                 const updateProductResponse = await fetch(
                     `${supabaseUrl}/rest/v1/products?id=eq.${round.product_id}`,
@@ -100,7 +120,7 @@ Deno.serve(async (req) => {
                         method: 'PATCH',
                         headers,
                         body: JSON.stringify({
-                            stock: 'stock - 1'
+                            stock: newStock
                         })
                     }
                 );

@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
                 'Prefer': 'return=representation'
             },
             body: JSON.stringify({
-                status: 'paid'
+                status: 'completed'
             })
         });
 
