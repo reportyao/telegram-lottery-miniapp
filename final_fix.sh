@@ -1,26 +1,40 @@
-# 完全清理和修复脚本
+#!/bin/bash
+
+# 彻底清理和修复脚本
 cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp
 
-echo "=== 完全清理环境 ==="
-# 停止所有npm和node进程
-pkill -9 -f npm
-pkill -9 -f node
-pkill -9 -f next
-sleep 5
+echo "=== 第一步：彻底清理所有进程 ==="
+# 使用多种方法清理所有可能占用端口的进程
+sudo pkill -9 -f npm || echo "npm进程已清理"
+sudo pkill -9 -f node || echo "node进程已清理"
+sudo pkill -9 -f next || echo "next进程已清理"
+sudo pkill -9 -f dev || echo "dev进程已清理"
+sudo pkill -9 -f start-server || echo "start-server进程已清理"
 
-# 清理所有相关端口
-lsof -ti:3000 | xargs kill -9 2>/dev/null
-lsof -ti:3001 | xargs kill -9 2>/dev/null
-lsof -ti:3002 | xargs kill -9 2>/dev/null
-lsof -ti:3003 | xargs kill -9 2>/dev/null
-lsof -ti:3004 | xargs kill -9 2>/dev/null
-sleep 2
+# 使用fuser强制清理端口
+for port in {3000..3010}; do
+    echo "清理端口 $port..."
+    sudo fuser -k ${port}/tcp 2>/dev/null || echo "端口 $port 无进程占用"
+done
 
-echo "=== 验证环境已清理 ==="
-ps aux | grep -E "(npm|node|next)" | grep -v grep
-netstat -tlnp | grep -E ":300[0-4]" | head -5
+sleep 8
 
-echo "=== 删除旧的API文件并重新创建 ==="
+echo "=== 第二步：验证端口清理状态 ==="
+for port in {3000..3010}; do
+    if lsof -i:$port >/dev/null 2>&1; then
+        echo "❌ 端口 $port 仍被占用: $(lsof -i:$port | head -1)"
+        # 强制清理
+        PID=$(lsof -t -i:$port 2>/dev/null)
+        if [ ! -z "$PID" ]; then
+            echo "强制杀死进程 $PID"
+            sudo kill -9 $PID 2>/dev/null
+        fi
+    else
+        echo "✅ 端口 $port 已清理"
+    fi
+done
+
+echo "=== 第三步：重新创建API文件 ==="
 rm -rf app/api/health
 rm -rf app/api/get-products
 
@@ -43,7 +57,7 @@ export async function GET(request: NextRequest) {
       message: 'API服务正常运行',
       version: '1.0.0',
       environment: process.env.NODE_ENV || 'development'
-    });
+    }, { status: 200 });
     
     console.log('✅ 健康检查API响应生成成功');
     return response;
@@ -108,7 +122,7 @@ export async function GET(request: NextRequest) {
       message: '商品列表获取成功',
       total: products.length,
       timestamp: new Date().toISOString()
-    });
+    }, { status: 200 });
     
     console.log('✅ 商品列表API响应生成成功，返回', products.length, '个商品');
     return response;
@@ -124,62 +138,84 @@ export async function GET(request: NextRequest) {
 EOF
 
 echo "=== 验证API文件创建 ==="
-echo "健康检查API文件内容："
-head -10 app/api/health/route.ts
+echo "API文件列表："
+ls -la app/api/*/route.ts
 echo ""
-echo "商品列表API文件内容："
-head -10 app/api/get-products/route.ts
+echo "健康检查API文件内容预览："
+head -15 app/api/health/route.ts
+echo ""
+echo "商品列表API文件内容预览："
+head -15 app/api/get-products/route.ts
 
-echo "=== 清理Next.js缓存 ==="
+echo "=== 第四步：彻底清理缓存和依赖 ==="
 rm -rf .next
 rm -rf node_modules/.cache
+rm -rf package-lock.json
 rm -rf app.log
 
-echo "=== 检查package.json配置 ==="
-echo "Next.js版本信息："
-cat package.json | grep -A3 -B3 "next"
-echo ""
+echo "重新安装依赖..."
+pnpm install
+echo "依赖安装完成"
 
-echo "=== 在3000端口启动应用（强制） ==="
-# 强制使用3000端口
-PORT=3000 npm run dev > app.log 2>&1 &
-NEW_PID=$!
-echo "新应用PID: $NEW_PID"
-sleep 8
+echo "=== 第五步：在3000端口启动应用 ==="
+echo "启动应用，日志保存到 app.log"
+echo "启动时间: $(date)"
 
-echo "=== 检查应用启动状态 ==="
+# 启动应用
+export PORT=3000
+timeout 30 bash -c 'npm run dev' > app.log 2>&1 &
+APP_PID=$!
+echo "应用PID: $APP_PID"
+
+echo "等待15秒让应用完全启动..."
+sleep 15
+
+echo "=== 第六步：检查应用启动状态 ==="
 echo "运行中的进程："
-ps aux | grep "npm run dev" | grep -v grep
+ps aux | grep "npm run dev" | grep -v grep || echo "未找到npm进程"
 echo ""
+
 echo "端口监听状态："
-netstat -tlnp | grep :3000
+echo "netstat检查："
+netstat -tlnp | grep :3000 || echo "❌ 端口3000未被监听"
+echo ""
+echo "lsof检查："
+lsof -i:3000 || echo "✅ 端口3000无进程占用"
 echo ""
 
-echo "=== 等待应用完全启动 ==="
-sleep 5
+echo "=== 第七步：查看启动日志 ==="
+echo "=== 最后25行启动日志 ==="
+tail -25 app.log
 
-echo "=== 测试所有端点 ==="
-echo "主页: $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)"
-echo "健康检查: $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/health)"
-echo "商品列表: $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/get-products)"
-echo "管理面板: $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/admin)"
-
-echo ""
-echo "=== 获取详细API响应 ==="
-echo "健康检查API响应："
-curl -s http://localhost:3000/api/health | head -10
-echo ""
-echo "商品列表API响应："
-curl -s http://localhost:3000/api/get-products | head -10
+echo "=== 第八步：测试所有端点 ==="
+echo "主页状态码: $(curl -s -w '%{http_code}' -o /dev/null --connect-timeout 10 http://localhost:3000/ || echo '失败')"
+echo "健康检查状态码: $(curl -s -w '%{http_code}' -o /dev/null --connect-timeout 10 http://localhost:3000/api/health || echo '失败')"
+echo "商品列表状态码: $(curl -s -w '%{http_code}' -o /dev/null --connect-timeout 10 http://localhost:3000/api/get-products || echo '失败')"
+echo "管理面板状态码: $(curl -s -w '%{http_code}' -o /dev/null --connect-timeout 10 http://localhost:3000/admin || echo '失败')"
 
 echo ""
-echo "=== 查看最新启动日志 ==="
-tail -20 app.log
+echo "=== 第九步：获取详细API响应 ==="
+echo "健康检查API详细响应："
+curl -s --connect-timeout 10 http://localhost:3000/api/health || echo "健康检查请求失败"
+echo ""
+echo ""
+echo "商品列表API详细响应："
+curl -s --connect-timeout 10 http://localhost:3000/api/get-products || echo "商品列表请求失败"
 
 echo ""
-echo "=== 最终状态检查 ==="
-echo "当前运行的所有node/npm进程："
-ps aux | grep -E "(node|npm)" | grep -v grep
+echo "=== 第十步：最终状态检查 ==="
+echo "所有node/npm进程："
+ps aux | grep -E "(node|npm)" | grep -v grep || echo "无node/npm进程运行"
 echo ""
-echo "3000端口详细监听信息："
-lsof -i :3000 2>/dev/null || echo "3000端口无监听"
+echo "最终端口状态："
+for port in 3000 3001 3002 3003 3004; do
+    if lsof -i:$port >/dev/null 2>&1; then
+        echo "❌ 端口 $port 仍被占用: $(lsof -i:$port | head -1)"
+    else
+        echo "✅ 端口 $port 空闲"
+    fi
+done
+
+echo ""
+echo "=== 修复完成 ==="
+echo "修复完成时间: $(date)"
