@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useTelegram } from '@telegram-apps/sdk'
+import { useTelegram as useTelegramSDK } from '@telegram-apps/sdk'
 
 interface TelegramUser {
   id: number
@@ -32,7 +32,7 @@ export function useTelegram(): TelegramContext {
     themeParams: {}
   })
 
-  const { user, tg, themeParams } = useTelegram()
+  const { user, tg, themeParams } = useTelegramSDK()
 
   useEffect(() => {
     setContext({

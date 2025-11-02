@@ -35,6 +35,48 @@
         "details": "1. 将修复后的代码推送到GitHub\n2. 更新相关文档说明\n3. 确保代码版本一致",
         "status": "completed",
         "priority": "medium"
+      },
+      "6": {
+        "id": "6",
+        "content": "修复Next.js版本兼容性问题",
+        "details": "1. 将Next.js从12.3.4降级到12.2.5\n2. 更新eslint-config-next版本保持一致\n3. 解决Node.js 18.19.0兼容性问题",
+        "status": "completed",
+        "priority": "high"
+      },
+      "7": {
+        "id": "7",
+        "content": "修复next.config.js配置重复",
+        "details": "删除重复的swcMinify: true配置项",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "8": {
+        "id": "8",
+        "content": "优化React Hooks SSR处理",
+        "details": "1. 优化lib/performance.ts中的useNetworkStatus函数\n2. 改进客户端检查逻辑\n3. 确保服务器端渲染兼容性",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "9": {
+        "id": "9",
+        "content": "配置环境变量和依赖管理",
+        "details": "1. 创建.env.local文件包含正确Supabase配置\n2. 使用--prefix参数解决npm安装权限问题\n3. 重新安装所有依赖包",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "10": {
+        "id": "10",
+        "content": "验证TypeScript编译和构建",
+        "details": "1. 运行TypeScript类型检查(tsc --noEmit)\n2. 验证所有配置文件正确性\n3. 确认项目结构完整性\n4. 生成最终修复报告",
+        "status": "completed",
+        "priority": "high"
+      },
+      "11": {
+        "id": "11",
+        "content": "修复hooks无限递归错误",
+        "details": "1. 发现并修复hooks/useTelegram.ts中的无限递归\n2. 重命名SDK导入避免函数名冲突\n3. 验证修复后的TypeScript编译\n4. 确认构建测试通过",
+        "status": "completed",
+        "priority": "high"
       }
     }
   }

@@ -19,7 +19,6 @@ const nextConfig = {
   compress: true,
   
   // 编译优化
-  swcMinify: true,
   
   // 预取配置
   generateEtags: false,
