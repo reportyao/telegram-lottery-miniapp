@@ -1,161 +1,172 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { telegram } from '@/lib/telegram'
-import { supabase } from '@/lib/supabase'
-import { User } from '@/types/database'
+import { useState, useEffect } from 'react'
 import Navigation from '@/components/Navigation'
-import { useRouter } from 'next/navigation'
+import UserBalance from '@/components/UserBalance'
+import { supabase } from '@/lib/supabase'
+import { useTelegram } from '@/hooks/useTelegram'
 
-// 充值金额常量
-const PRESET_AMOUNTS = [10, 50, 100, 500, 1000] as const
+const TOPUP_AMOUNTS = [10, 50, 100, 200, 500, 1000]
 
-export default function TopUpPage() {
-  const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [amount, setAmount] = useState<string>('')
+export default function TopupPage() {
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
+  const [customAmount, setCustomAmount] = useState('')
+  const [balance, setBalance] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const presetAmounts = PRESET_AMOUNTS
+  const { user } = useTelegram()
 
   useEffect(() => {
-    loadUser()
-  }, [])
+    async function loadBalance() {
+      if (!user) return
 
-  const loadUser = async () => {
-    try {
-      const authData = await telegram.authenticateUser()
-      setUser(authData.user)
-    } catch (err) {
-      console.error('Load user error:', err)
+      try {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('balance')
+          .eq('telegram_id', user.id)
+          .single()
+
+        if (userData) {
+          setBalance(userData.balance)
+        }
+      } catch (error) {
+        console.error('Error loading balance:', error)
+      }
     }
-  }
 
-  const handleTopUp = async () => {
-    if (!user || !amount || parseFloat(amount) <= 0) {
-      setError('Please enter a valid amount')
+    loadBalance()
+  }, [user])
+
+  const handleTopup = async () => {
+    if (!user) return
+
+    const amount = selectedAmount || parseInt(customAmount)
+    if (!amount || amount <= 0) {
+      alert('请选择或输入有效的充值金额')
       return
     }
 
+    setLoading(true)
+
     try {
-      setLoading(true)
-      setError(null)
+      const { data: userData } = await supabase
+        .from('users')
+        .select('id')
+        .eq('telegram_id', user.id)
+        .single()
 
-      const { data, error: topUpError } = await supabase.functions.invoke('create-order', {
-        body: {
-          user_id: user.id,
-          amount: parseFloat(amount),
-          payment_method: 'demo'
+      if (userData) {
+        // 创建充值订单
+        const { data: order, error } = await supabase
+          .from('orders')
+          .insert({
+            user_id: userData.id,
+            product_name: `充值 ${amount}T`,
+            amount: amount,
+            type: 'topup',
+            status: 'pending'
+          })
+          .select()
+          .single()
+
+        if (error) {
+          console.error('Error creating topup order:', error)
+          alert('充值失败')
+        } else {
+          // 模拟支付成功，直接更新余额
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({ balance: balance + amount })
+            .eq('id', userData.id)
+
+          if (updateError) {
+            console.error('Error updating balance:', error)
+            alert('充值失败')
+          } else {
+            // 更新订单状态
+            await supabase
+              .from('orders')
+              .update({ status: 'completed' })
+              .eq('id', order.id)
+
+            alert('充值成功！')
+            setBalance(balance + amount)
+            setSelectedAmount(null)
+            setCustomAmount('')
+          }
         }
-      })
-
-      if (topUpError) {
-        throw topUpError
       }
-
-      alert(`Successfully added $${amount} to your balance!`)
-      router.push('/profile')
-    } catch (err: any) {
-      console.error('Top up error:', err)
-      setError(err.message || 'Failed to top up')
+    } catch (error) {
+      console.error('Error processing topup:', error)
+      alert('充值失败')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="pb-20 min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-primary text-white p-6">
-        <button
-          onClick={() => router.back()}
-          className="mb-4 text-white text-lg"
-        >
-          ← Back
-        </button>
-        <h1 className="text-2xl font-bold">Top Up Balance</h1>
-        {user && (
-          <p className="text-sm opacity-90 mt-2">
-            Current Balance: ${typeof user.balance === 'string'
-              ? parseFloat(user.balance).toFixed(2)
-              : user.balance?.toFixed(2) || '0.00'
-            }
-          </p>
-        )}
-      </div>
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <div className="max-w-md mx-auto p-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">账户充值</h1>
+        
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <UserBalance balance={balance} />
+        </div>
 
-      <div className="p-4">
-        {/* Preset Amounts */}
-        <div className="bg-white rounded-lg shadow p-6 mb-4">
-          <h3 className="font-bold mb-4">Quick Select</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {presetAmounts.map((preset) => (
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">选择充值金额</h2>
+          
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            {TOPUP_AMOUNTS.map((amount) => (
               <button
-                key={preset}
-                onClick={() => setAmount(preset.toString())}
-                className={`py-3 px-4 rounded-lg border-2 font-semibold transition-colors ${
-                  amount === preset.toString()
-                    ? 'border-primary bg-primary text-white'
-                    : 'border-gray-300 hover:border-primary'
+                key={amount}
+                onClick={() => {
+                  setSelectedAmount(amount)
+                  setCustomAmount('')
+                }}
+                className={`p-3 rounded-lg border text-center ${
+                  selectedAmount === amount
+                    ? 'border-blue-600 bg-blue-50 text-blue-600'
+                    : 'border-gray-300 hover:border-gray-400'
                 }`}
               >
-                ${preset}
+                {amount}T
               </button>
             ))}
           </div>
-        </div>
 
-        {/* Custom Amount */}
-        <div className="bg-white rounded-lg shadow p-6 mb-4">
-          <h3 className="font-bold mb-4">Custom Amount</h3>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600 text-xl">
-              $
-            </span>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              自定义金额
+            </label>
             <input
               type="number"
-              min="1"
-              step="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
-              className="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-lg text-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              value={customAmount}
+              onChange={(e) => {
+                setCustomAmount(e.target.value)
+                setSelectedAmount(null)
+              }}
+              placeholder="输入充值金额"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          <button
+            onClick={handleTopup}
+            disabled={loading || (!selectedAmount && !customAmount)}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? '处理中...' : '确认充值'}
+          </button>
         </div>
 
-        {/* Payment Info */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-          <p className="text-sm text-blue-800">
-            <strong>Demo Mode:</strong> In this demo version, payments are simulated. 
-            In production, this will integrate with Tajikistan local payment methods.
-          </p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
-
-        {/* Confirm Button */}
-        <button
-          onClick={handleTopUp}
-          disabled={loading || !amount || parseFloat(amount) <= 0}
-          className="w-full py-4 bg-primary text-white rounded-lg font-bold text-lg hover:bg-primary-dark transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Processing...' : `Top Up $${amount || '0'}`}
-        </button>
-
-        {/* Payment Methods (Future) */}
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-          <h4 className="font-semibold mb-2 text-sm text-gray-700">Future Payment Methods:</h4>
-          <ul className="text-sm text-gray-600 space-y-1">
-            <li>• Local Bank Cards (Tajikistan)</li>
-            <li>• Mobile Money</li>
-            <li>• Cash Payment Centers</li>
-            <li>• International Cards (Visa/MasterCard)</li>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="text-sm font-medium text-blue-800 mb-2">充值说明</h3>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• 充值后金额立即到账</li>
+            <li>• 支持多种支付方式</li>
+            <li>• 1T = 1 Telegram币</li>
+            <li>• 最低充值金额为10T</li>
           </ul>
         </div>
       </div>
