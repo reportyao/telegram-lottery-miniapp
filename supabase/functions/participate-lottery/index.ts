@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
             },
             body: JSON.stringify({
                 user_id,
-                type: 'participate_lottery',
+                type: 'purchase',
                 amount: -totalAmount,
                 description: `Participated in lottery round ${lottery_round_id}`,
                 reference_id: lottery_round_id
