@@ -1,0 +1,241 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Telegram WebApp 基础样式 */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    /* 防止缩放 */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    /* Telegram WebApp 优化 */
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 防止用户选择 */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Telegram 主题支持 */
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #000000);
+  }
+  
+  /* 允许文本输入框内容被选中 */
+  input, textarea, [contenteditable] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+  
+  /* 滚动条样式 */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--tg-theme-hint-color, #999999);
+    border-radius: 2px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--tg-theme-link-color, #2481cc);
+  }
+}
+
+/* 自定义组件样式 */
+@layer components {
+  /* Telegram 按钮样式 */
+  .tg-button {
+    @apply px-4 py-2 rounded-lg font-medium transition-all;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    border: none;
+    cursor: pointer;
+  }
+  
+  .tg-button:hover {
+    opacity: 0.8;
+  }
+  
+  .tg-button:active {
+    transform: scale(0.98);
+  }
+  
+  .tg-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Telegram 输入框样式 */
+  .tg-input {
+    @apply w-full px-3 py-2 rounded-lg border;
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #000000);
+    border-color: var(--tg-theme-hint-color, #999999);
+  }
+  
+  .tg-input:focus {
+    border-color: var(--tg-theme-link-color, #2481cc);
+    outline: none;
+  }
+  
+  /* 卡片样式 */
+  .tg-card {
+    @apply bg-white rounded-lg shadow-sm border p-4;
+    background: var(--tg-theme-bg-color, #ffffff);
+    border-color: var(--tg-theme-hint-color, #999999);
+  }
+  
+  /* 导航栏样式 */
+  .tg-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t;
+    background: var(--tg-theme-bg-color, #ffffff);
+    border-color: var(--tg-theme-hint-color, #999999);
+  }
+}
+
+/* 工具类 */
+@layer utilities {
+  /* 文本截断 */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  
+  /* 安全区域适配 */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* 动画 */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-bounce-in {
+    animation: bounceIn 0.5s ease-out;
+  }
+}
+
+/* 关键帧动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* 暗色主题适配 */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--tg-theme-bg-color, #1a1a1a);
+    color: var(--tg-theme-text-color, #ffffff);
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .tg-button {
+    border: 2px solid currentColor;
+  }
+  
+  .tg-input {
+    border-width: 2px;
+  }
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
