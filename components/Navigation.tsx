@@ -23,8 +23,8 @@ export default function Navigation() {
             href={item.href}
             className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
               pathname === item.href
-                ? 'text-primary'
-                : 'text-gray-600 hover:text-primary'
+                ? 'text-blue-600'
+                : 'text-gray-600 hover:text-blue-600'
             }`}
           >
             <span className="text-2xl mb-1">{item.icon}</span>
