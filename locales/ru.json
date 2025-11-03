@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Платформа лотереи",
+    "description": "Онлайн-платформа лотереи"
+  },
+  "nav": {
+    "home": "Главная",
+    "products": "Товары",
+    "my": "Мой",
+    "orders": "Заказы",
+    "referral": "Реферал"
+  },
+  "home": {
+    "welcome": "Добро пожаловать на платформу лотереи",
+    "hot_products": "Популярные товары",
+    "view_all": "Посмотреть все"
+  },
+  "product": {
+    "price": "Цена",
+    "stock": "Запас",
+    "shares": "Доли",
+    "per_share": "За долю",
+    "participate": "Участвовать",
+    "sold": "Продано",
+    "remaining": "Осталось"
+  },
+  "lottery": {
+    "total_shares": "Всего долей",
+    "sold_shares": "Продано долей",
+    "price_per_share": "Цена за долю",
+    "select_shares": "Выберите доли",
+    "confirm_participate": "Подтвердить",
+    "status": {
+      "active": "Активно",
+      "ready_to_draw": "Готово к розыгрышу",
+      "completed": "Завершено",
+      "cancelled": "Отменено"
+    }
+  },
+  "user": {
+    "balance": "Баланс",
+    "total_spent": "Всего потрачено",
+    "total_wins": "Всего выигрышей",
+    "participations": "Участия",
+    "referrals": "Рефералы",
+    "profile": "Профиль",
+    "transactions": "Транзакции",
+    "my_wins": "Мои выигрыши"
+  },
+  "order": {
+    "create": "Создать заказ",
+    "status": {
+      "pending": "Ожидание",
+      "paid": "Оплачено",
+      "completed": "Завершено",
+      "cancelled": "Отменено"
+    }
+  },
+  "referral": {
+    "title": "Пригласить друзей",
+    "your_code": "Мой код",
+    "invite_link": "Ссылка приглашения",
+    "total_referrals": "Всего рефералов",
+    "total_rewards": "Всего наград",
+    "copy": "Копировать",
+    "share": "Поделиться"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успех",
+    "confirm": "Подтвердить",
+    "cancel": "Отменить",
+    "close": "Закрыть",
+    "save": "Сохранить",
+    "submit": "Отправить",
+    "retry": "Повторить",
+    "insufficient_balance": "Недостаточно средств",
+    "operation_success": "Операция успешна",
+    "operation_failed": "Операция не удалась"
+  }
+}
