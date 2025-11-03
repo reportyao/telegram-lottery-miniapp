@@ -1,0 +1,114 @@
+{
+  "_source_id": 15,
+  "sources": {
+    "塔吉克斯坦货币（TJS）格式化研究": {
+      "https://zh.wikipedia.org/zh-hans/%E5%A1%94%E5%90%89%E5%85%8B%E6%96%AF%E5%9D%A6%E7%B4%A2%E8%8E%AB%E5%B0%BC": {
+        "id": 1,
+        "publisher": "维基百科",
+        "url": "https://zh.wikipedia.org/zh-hans/%E5%A1%94%E5%90%89%E5%85%8B%E6%96%AF%E5%9D%A6%E7%B4%A2%E8%8E%AB%E5%B0%BC",
+        "title": "塔吉克斯坦索莫尼",
+        "info": "塔吉克斯坦索莫尼的基本信息，包括货币符号SM、ISO代码TJS、小数位数100迪拉姆等核心信息"
+      },
+      "https://en.wikipedia.org/wiki/Tajikistani_somoni": {
+        "id": 2,
+        "publisher": "Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Tajikistani_somoni",
+        "title": "Tajikistani somoni",
+        "info": "塔吉克斯坦货币的英文详细信息，包括流通面额、货币符号SM、替换历史等"
+      },
+      "https://www.myshyft.com/blog/currency-display-conventions/": {
+        "id": 3,
+        "publisher": "MyShyft",
+        "url": "https://www.myshyft.com/blog/currency-display-conventions/",
+        "title": "Currency Display For Global Scheduling: Mobile Internationalization",
+        "info": "货币显示的国际标准和最佳实践，包括区域格式、符号放置、移动端显示考虑等"
+      },
+      "https://download.microsoft.com/download/1/4/c/14c1d8a7-54aa-4631-bad6-56450eb35f27/taj-taj-styleguide.pdf": {
+        "id": 4,
+        "publisher": "Microsoft",
+        "url": "https://download.microsoft.com/download/1/4/c/14c1d8a7-54aa-4631-bad6-56450eb35f27/taj-taj-styleguide.pdf",
+        "title": "Tajik Style Guide",
+        "info": "塔吉克斯坦官方数字格式化规范，包括小数分隔符（逗号）、千位分隔符（空格）、货币符号位置等详细规则"
+      }
+    },
+    "塔吉克斯坦UI设计特点研究": {
+      "https://www.flagcolorcodes.com/tajikistan": {
+        "id": 5,
+        "publisher": "FlagColorCodes",
+        "url": "https://www.flagcolorcodes.com/tajikistan",
+        "title": "塔吉克斯坦国旗颜色代码",
+        "info": "塔吉克斯坦国旗的具体颜色代码：红色#CC0000、白色#FFFFFF、绿色#006600、黄色#F8C300，以及各颜色的文化含义：红色代表太阳和胜利、白色代表棉花产业、绿色代表农产品、黄色代表国家主权"
+      },
+      "https://datareportal.com/reports/digital-2024-tajikistan": {
+        "id": 6,
+        "publisher": "DataReportal",
+        "url": "https://datareportal.com/reports/digital-2024-tajikistan",
+        "title": "塔吉克斯坦2024数字化报告",
+        "info": "塔吉克斯坦2024年数字化统计数据：互联网用户425万（普及率41.6%）、社交媒体用户160万（15.6%）、移动连接1054万（102.9%），中位年龄21.8岁，移动网速9.35 Mbps，18岁以上社交媒体使用率21.8%"
+      },
+      "https://www.researchgate.net/publication/228784566_Towards_Conceptualization_of_Islamic_User_Interface_for_Islamic_Website_An_Initial_Investigation": {
+        "id": 7,
+        "publisher": "ResearchGate",
+        "url": "https://www.researchgate.net/publication/228784566_Towards_Conceptualization_of_Islamic_User_Interface_for_Islamic_Website_An_Initial_Investigation",
+        "title": "伊斯兰网站用户界面概念化研究",
+        "info": "伊斯兰网站UI设计概念化研究：77%的伊斯兰网站使用伊斯兰符号图标，绿色是主要色彩偏好，64%网站包含伊斯兰热词，9%网站使用不符合规范的图片，6%网站包含阿拉伯语翻译"
+      },
+      "https://www.fontsquirrel.com/fonts/list/language/tajik": {
+        "id": 8,
+        "publisher": "Font Squirrel",
+        "url": "https://www.fontsquirrel.com/fonts/list/language/tajik",
+        "title": "塔吉克语支持字体列表",
+        "info": "39种支持塔吉克语的字体，包括Arimo、Charis SIL、DejaVu系列、Roboto、Open Sans等，主要提供TTF和OTF格式"
+      },
+      "https://www.designstudiouiux.com/blog/mobile-app-ui-ux-design-trends/": {
+        "id": 9,
+        "publisher": "DesignStudioUIUX",
+        "url": "https://www.designstudiouiux.com/blog/mobile-app-ui-ux-design-trends/",
+        "title": "2025移动UI设计趋势",
+        "info": "2025年移动应用UI/UX设计趋势：极简界面、人工智能个性化、微交互、暗模式、手势导航和可访问性设计"
+      },
+      "https://dribbble.com/tags/islamic-app": {
+        "id": 10,
+        "publisher": "Dribbble",
+        "url": "https://dribbble.com/tags/islamic-app",
+        "title": "伊斯兰App UI设计案例",
+        "info": "Dribbble平台176个伊斯兰UI设计案例显示：强调清洁简约设计（clean design/minimal）、现代样式、暗模式、绿色和蓝色主题色、集成古兰经、礼拜时间、朝向查找、杜阿等功能"
+      },
+      "https://gs.statcounter.com/social-media-stats/all/tajikistan": {
+        "id": 11,
+        "publisher": "StatCounter",
+        "url": "https://gs.statcounter.com/social-media-stats/all/tajikistan",
+        "title": "塔吉克斯坦社交媒体市场份额",
+        "info": "塔吉克斯坦2025年10月社交媒体使用数据：Instagram 45.5%、Facebook 27.74%、YouTube 11.8%、Twitter 6.08%、Pinterest 5.72%、VKontakte 2.31%"
+      },
+      "https://uxdesign.cc/designing-a-robust-right-to-left-ui-in-arabic-hebrew-and-farsi-d1e662a09cfa": {
+        "id": 12,
+        "publisher": "UX Design Medium",
+        "url": "https://uxdesign.cc/designing-a-robust-right-to-left-ui-in-arabic-hebrew-and-farsi-d1e662a09cfa",
+        "title": "RTL UI设计最佳实践",
+        "info": "阿拉伯语、希伯来语和波斯语UI设计的RTL镜像原则：所有功能元素都必须从左到右镜像到右到左，支持8.2亿RTL语言用户"
+      },
+      "https://fonts.google.com/noto/specimen/Noto+Sans": {
+        "id": 13,
+        "publisher": "Google Fonts",
+        "url": "https://fonts.google.com/noto/specimen/Noto+Sans",
+        "title": "Noto Sans字体详情",
+        "info": "Noto Sans是无衬线字体集合，支持拉丁语、西里尔语和希腊语脚本，提供从Thin 100到Black 900的18种不同样式，适合塔吉克语使用"
+      },
+      "https://colorswall.com/palette/157111": {
+        "id": 14,
+        "publisher": "ColorsWall",
+        "url": "https://colorswall.com/palette/157111",
+        "title": "伊斯兰绿色Web应用配色",
+        "info": "伊斯兰绿色#009000在Web应用中的色彩搭配：与honolulu blue #006db0、brilliant azure #3399ff、medium blue #0000cd、light crimson #f56991形成对比色组合"
+      },
+      "https://medium.com/my-games-company/asian-ui-design-what-sets-it-apart-from-western-designs-ab7225b05dd4": {
+        "id": 15,
+        "publisher": "Medium MY.GAMES",
+        "url": "https://medium.com/my-games-company/asian-ui-design-what-sets-it-apart-from-western-designs-ab7225b05dd4",
+        "title": "亚洲vs西方UI设计差异",
+        "info": "亚洲UI设计特点：错综复杂多层次美学、高密度界面、鲜色色彩、动态动画、受集体主义影响，与西方极简主义设计形成对比"
+      }
+    }
+  }
+}

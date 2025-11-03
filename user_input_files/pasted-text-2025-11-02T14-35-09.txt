@@ -1,0 +1,193 @@
+
+echo "=== 第一步：彻底清理所有进程 ==="
+# 使用多种方法清理所有可能占用端口的进程
+sudo pkill -9 -f npm || echo "npm进程已清理"
+sudo pkill -9 -f node || echo "node进程已清理"
+sudo pkill -9 -f next || echo "next进程已清理"
+sudo pkill -9 -f dev || echo "dev进程已清理"
+sudo pkill -9 -f start-server || echo "start-server进程已清理"
+
+# 使用fuser强制清理端口
+for port in {3000..3010}; do
+    echo "清理端口 $port..."
+    sudo fuser -k ${port}/tcp 2>/dev/null || echo "端口 $port 无进程占用"
+done
+
+sleep 8
+
+echo "=== 第二步：验证端口清理状态 ==="
+for port in {3000..3010}; do
+    if lsof -i:$port >/dev/null 2>&1; then
+        echo "❌ 端口 $port 仍被占用: $(lsof -i:$port | head -1)"
+        # 强制清理
+        PID=$(lsof -t -i:$port 2>/dev/null)
+        if [ ! -z "$PID" ]; then
+            echo "强制杀死进程 $PID"
+            sudo kill -9 $PID 2>/dev/null
+        fi
+    else
+        echo "✅ 端口 $port 已清理"
+    fi
+done
+
+echo "=== 第三步：重新创建API文件 ==="
+rm -rf app/api/health
+rm -rf app/api/get-products
+
+# 重新创建API目录
+mkdir -p app/api/health
+mkdir -p app/api/get-products
+
+cat > app/api/health/route.ts << 'EOF'
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  console.log('🔍 健康检查API被调用 - 时间:', new Date().toISOString());
+  
+  try {
+    const response = NextResponse.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      message: 'API服务正常运行',
+      version: '1.0.0',
+      environment: process.env.NODE_ENV || 'development'
+    }, { status: 200 });
+    
+    console.log('✅ 健康检查API响应生成成功');
+    return response;
+  } catch (error) {
+    console.error('❌ 健康检查API错误:', error);
+    return NextResponse.json({
+      status: 'error',
+      message: '健康检查失败'
+    }, { status: 500 });
+echo "=== 修复完成 ==="ut 10 http://localhost:3000/api/get-products || echo "商品列表请求失败"alhost:3000/admin || echo '失败')"ho '失败')"
+=== 第一步：彻底清理所有进程 ===
+Killed
+npm进程已清理
+Killed
+node进程已清理
+Killed
+next进程已清理
+Killed
+dev进程已清理
+Killed
+start-server进程已清理
+清理端口 3000...
+端口 3000 无进程占用
+清理端口 3001...
+端口 3001 无进程占用
+清理端口 3002...
+端口 3002 无进程占用
+清理端口 3003...
+端口 3003 无进程占用
+清理端口 3004...
+端口 3004 无进程占用
+清理端口 3005...
+端口 3005 无进程占用
+清理端口 3006...
+端口 3006 无进程占用
+清理端口 3007...
+端口 3007 无进程占用
+清理端口 3008...
+端口 3008 无进程占用
+清理端口 3009...
+端口 3009 无进程占用
+清理端口 3010...
+端口 3010 无进程占用
+=== 第二步：验证端口清理状态 ===
+✅ 端口 3000 已清理
+✅ 端口 3001 已清理
+✅ 端口 3002 已清理
+✅ 端口 3003 已清理
+✅ 端口 3004 已清理
+✅ 端口 3005 已清理
+✅ 端口 3006 已清理
+✅ 端口 3007 已清理
+✅ 端口 3008 已清理
+✅ 端口 3009 已清理
+✅ 端口 3010 已清理
+=== 第三步：重新创建API文件 ===
+=== 第四步：彻底清理缓存和依赖 ===
+重新安装依赖...
+Lockfile is up to date, resolution step is skipped
+Packages: +388
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 388, reused 388, downloaded 0, added 388, done
+
+dependencies:
++ @supabase/supabase-js 2.78.0
++ @telegram-apps/sdk 1.1.3
++ next 14.2.33
++ react 18.3.1
++ react-dom 18.3.1
+
+devDependencies:
++ @types/node 20.19.24
++ @types/react 18.3.26
++ @types/react-dom 18.3.7
++ autoprefixer 10.4.21
++ eslint 8.57.1
++ eslint-config-next 14.2.33
++ postcss 8.5.6
++ tailwindcss 3.4.18
++ typescript 5.9.3
+
+╭ Warning ───────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                            │
+│   Ignored build scripts: unrs-resolver.                                                    │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.   │
+│                                                                                            │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Done in 3.4s using pnpm v10.20.0
+=== 第五步：在3000端口启动应用 ===
+[1] 402931
+应用PID: 402931
+等待15秒让应用完全启动...
+[1]+  Done                    timeout 30 bash -c 'npm run dev' > app.log 2>&1
+=== 第六步：检查应用启动状态 ===
+运行中的进程：
+root      402657  1.2  1.6 1093104 57296 ?       Ssl  19:32   0:00 npm run dev -p 3000
+
+端口监听状态：
+tcp6       0      0 :::3000                 :::*                    LISTEN      402773/next-server  
+
+=== 第七步：查看启动日志 ===
+
+> telegram-lottery-miniapp@1.0.0 dev
+> next dev
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at Server.listen (node:net:2067:7)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/start-server.js:280:16
+    at new Promise (<anonymous>)
+    at startServer (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/start-server.js:191:11)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/start-server.js:310:52
+    at Span.traceAsyncFn (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/trace/trace.js:154:26)
+    at process.<anonymous> (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/start-server.js:310:35)
+    at process.emit (node:events:524:28) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+=== 第八步：测试所有端点 ===
+主页状态码: 200
+健康检查状态码: 404
+商品列表状态码: 404
+管理面板状态码: 200
+
+=== 第九步：获取详细API响应 ===
+健康检查API详细响应：
+<!DOCTYPE html><html lang="zh"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/app/layout.css?v=1762093965120" data-precedence="next_static/css/app/layout.css"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack.js?v=1762093965120"/><script src="/_next/static/chunks/main-app.js?v=1762093965120" async=""></script><script src="/_next/static/chunks/app-pages-internals.js" async=""></script><script src="/_next/static/chunks/app/layout.js" async=""></script><meta name="robots" content="noindex"/><title>404: This page could not be found.</title><title>LuckyMart TJ - 幸运集市</title><meta name="description" content="基于Telegram的一元夺宝电商平台"/><script src="/_next/static/chunks/polyfills.js" noModule=""></script></head><body class="antialiased"><div style="font-family:system-ui,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;;height:100vh;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center"><div><style>body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}</style><h1 class="next-error-h1" style="display:inline-block;margin:0 20px 0 0;padding:0 23px 0 0;font-size:24px;font-weight:500;vertical-align:top;line-height:49px">404</h1><div style="display:inline-block"><h2 style="font-size:14px;font-weight:400;line-height:49px;margin:0">This page could not be found.</h2></div></div></div><script src="/_next/static/chunks/webpack.js?v=1762093965120" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/css/app/layout.css?v=1762093965120\",\"style\"]\n0:D{\"name\":\"r2\",\"env\":\"Server\"}\n"])</script><script>self.__next_f.push([1,"2:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n5:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n6:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n8:I[\"(app-pages-browser)/./components/ErrorBoundary.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"default\"]\n9:I[\"(app-pages-browser)/./contexts/LanguageContext.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"LanguageProvider\"]\n11:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n3:D{\"name\":\"\",\"env\":\"Server\"}\n4:D{\"name\":\"NotFound\",\"env\":\"Server\"}\n4:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:D{\"name\":\"RootLayout\",\"env\":\"Server"])</script><script>self.__next_f.push([1,"\"}\na:D{\"name\":\"NotFound\",\"env\":\"Server\"}\nb:{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"}\nc:{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"}\nd:{\"display\":\"inline-block\"}\ne:{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0}\na:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":\"$b\",\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":\"$c\",\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":\"$d\",\"children\":[\"$\",\"h2\",null,{\"style\":\"$e\",\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:[\"$\",\"html\",null,{\"lang\":\"zh\",\"children\":[\"$\",\"body\",null,{\"className\":\"antialiased\",\"children\":[\"$\",\"$L8\",null,{\"children\":[\"$\",\"$L9\",null,{\"children\":[\"$\",\"$L5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$a\",\"notFoundStyles\":[]}]}]}]}]}]\nf:D{\"name\":\"rQ\",\"env\":\"Server\"}\nf:[\"$\",\"meta\",null,{\"name\":\"robots\",\"content\":\"noindex\"}]\n10:D{\"name\":\"\",\"env\":\"Server\"}\n12:[]\n0:[\"$\",\"$L2\",null,{\"buildId\":\"development\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"api\",\"health\"],\"initialTree\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{},[[\"$L3\",\"$4\",null],null],null]},[null,[\"$\",\"$L5\",nul"])</script><script>self.__next_f.push([1,"l,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"/_not-found\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/app/layout.css?v=1762093965120\",\"precedence\":\"next_static/css/app/layout.css\",\"crossOrigin\":\"$undefined\"}]],\"$7\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[\"$f\",\"$L10\"],\"globalErrorComponent\":\"$11\",\"missingSlots\":\"$W12\"}]\n"])</script><script>self.__next_f.push([1,"10:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"LuckyMart TJ - 幸运集市\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"基于Telegram的一元夺宝电商平台\"}]]\n3:null\n"])</script></body></html>
+商品列表API详细响应：
+<!DOCTYPE html><html lang="zh"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/app/layout.css?v=1762093965161" data-precedence="next_static/css/app/layout.css"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack.js?v=1762093965161"/><script src="/_next/static/chunks/main-app.js?v=1762093965161" async=""></script><script src="/_next/static/chunks/app-pages-internals.js" async=""></script><script src="/_next/static/chunks/app/layout.js" async=""></script><meta name="robots" content="noindex"/><title>404: This page could not be found.</title><title>LuckyMart TJ - 幸运集市</title><meta name="description" content="基于Telegram的一元夺宝电商平台"/><script src="/_next/static/chunks/polyfills.js" noModule=""></script></head><body class="antialiased"><div style="font-family:system-ui,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;;height:100vh;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center"><div><style>body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}</style><h1 class="next-error-h1" style="display:inline-block;margin:0 20px 0 0;padding:0 23px 0 0;font-size:24px;font-weight:500;vertical-align:top;line-height:49px">404</h1><div style="display:inline-block"><h2 style="font-size:14px;font-weight:400;line-height:49px;margin:0">This page could not be found.</h2></div></div></div><script src="/_next/static/chunks/webpack.js?v=1762093965161" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/css/app/layout.css?v=1762093965161\",\"style\"]\n0:D{\"name\":\"r2\",\"env\":\"Server\"}\n"])</script><script>self.__next_f.push([1,"2:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n5:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n6:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n8:I[\"(app-pages-browser)/./components/ErrorBoundary.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"default\"]\n9:I[\"(app-pages-browser)/./contexts/LanguageContext.tsx\",[\"app/layout\",\"static/chunks/app/layout.js\"],\"LanguageProvider\"]\n11:I[\"(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"\"]\n3:D{\"name\":\"\",\"env\":\"Server\"}\n4:D{\"name\":\"NotFound\",\"env\":\"Server\"}\n4:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:D{\"name\":\"RootLayout\",\"env\":\"Server"])</script><script>self.__next_f.push([1,"\"}\na:D{\"name\":\"NotFound\",\"env\":\"Server\"}\nb:{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"}\nc:{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"}\nd:{\"display\":\"inline-block\"}\ne:{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0}\na:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":\"$b\",\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":\"$c\",\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":\"$d\",\"children\":[\"$\",\"h2\",null,{\"style\":\"$e\",\"children\":\"This page could not be found.\"}]}]]}]}]]\n7:[\"$\",\"html\",null,{\"lang\":\"zh\",\"children\":[\"$\",\"body\",null,{\"className\":\"antialiased\",\"children\":[\"$\",\"$L8\",null,{\"children\":[\"$\",\"$L9\",null,{\"children\":[\"$\",\"$L5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$a\",\"notFoundStyles\":[]}]}]}]}]}]\nf:D{\"name\":\"rQ\",\"env\":\"Server\"}\nf:[\"$\",\"meta\",null,{\"name\":\"robots\",\"content\":\"noindex\"}]\n10:D{\"name\":\"\",\"env\":\"Server\"}\n12:[]\n0:[\"$\",\"$L2\",null,{\"buildId\":\"development\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"api\",\"get-products\"],\"initialTree\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"/_not-found\",{\"children\":[\"__PAGE__\",{},[[\"$L3\",\"$4\",null],null],null]},[null,[\"$\",\"$L"])</script><script>self.__next_f.push([1,"5\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"/_not-found\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L6\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/app/layout.css?v=1762093965161\",\"precedence\":\"next_static/css/app/layout.css\",\"crossOrigin\":\"$undefined\"}]],\"$7\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[\"$f\",\"$L10\"],\"globalErrorComponent\":\"$11\",\"missingSlots\":\"$W12\"}]\n"])</script><script>self.__next_f.push([1,"10:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"LuckyMart TJ - 幸运集市\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"基于Telegram的一元夺宝电商平台\"}]]\n3:null\n"])</script></body></html>
+=== 修复完成 ===
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# 

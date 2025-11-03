@@ -1,0 +1,141 @@
+# 6. 再次测试外网访问
+echo "========== 测试外网访问 =========="
+curl -I http://47.243.83.253/
+curl http://47.243.83.253/api/health
+========== 删除重复配置 ==========
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+========== 检查应用进程 ==========
+========== 应用日志（最近100行）==========
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/module.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/builtin/_error.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/load-default-error-components.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/next.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+Warning: data for page "/_error" (path "/") is 133 kB which exceeds the threshold of 128 kB, this amount of data can reduce performance.
+See more info here: https://nextjs.org/docs/messages/large-page-data
+Error: Cannot find module 'critters'
+Require stack:
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/render.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/module.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/builtin/_error.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/load-default-error-components.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/next.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/require-hook.js:55:36
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at mod.require (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/require-hook.js:65:28)
+    at require (node:internal/modules/helpers:182:18)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js:147:30
+    at postProcessHTML (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js:165:29)
+    at async renderToHTMLImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/render.js:1016:27)
+    at async doRender (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:1414:30)
+    at async cacheEntry.responseCache.get.routeKind (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.pipeImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/next-server.js:231:21)
+    at async DevServer.handleRequestImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:818:17)
+    at async /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/render.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/module.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/builtin/_error.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/load-default-error-components.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/next.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+Warning: data for page "/_error" (path "/") is 133 kB which exceeds the threshold of 128 kB, this amount of data can reduce performance.
+See more info here: https://nextjs.org/docs/messages/large-page-data
+Error: Cannot find module 'critters'
+Require stack:
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/render.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/module.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/builtin/_error.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/load-default-error-components.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/next.js
+- /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/require-hook.js:55:36
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at mod.require (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/require-hook.js:65:28)
+    at require (node:internal/modules/helpers:182:18)
+    at /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js:147:30
+    at postProcessHTML (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js:165:29)
+    at async renderToHTMLImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/render.js:1016:27)
+    at async doRender (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:1414:30)
+    at async cacheEntry.responseCache.get.routeKind (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:1496:28)
+    at async pipe.req.req (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/base-server.js:922:25)
+    at async /root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async requestHandlerImpl (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/router-server.js:395:24)
+    at async Server.requestListener (/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/post-process.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/render.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/module.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/future/route-modules/pages/builtin/_error.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/load-default-error-components.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/dev/next-dev-server.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/next.js',
+    '/root/telegram-lottery-miniapp/telegram-lottery-miniapp/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ GET / 500 in 468ms
+ GET / 500 in 22ms
+========== 测试本地首页 ==========
+*   Trying 127.0.0.1:3001...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to localhost (127.0.0.1) port 3001 (#0)
+> GET / HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.81.0
+> Accept: */*
+> 
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 500 Internal Server Error
+< Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+< Date: Sun, 02 Nov 2025 18:23:46 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [32 bytes data]
+100    21    0    21    0     0    440      0 --:--:-- --:--:-- --:--:--   446
+* Connection #0 to host localhost left intact
+Internal Server Error========== 应用未运行，正在重启 ==========
+[2] 897931
+[2]+  Done                    nohup npm run dev > app_3001.log 2>&1
+========== 测试外网访问 ==========
+HTTP/1.1 500 Internal Server Error
+Server: nginx/1.18.0 (Ubuntu)
+Date: Sun, 02 Nov 2025 18:24:01 GMT
+Connection: keep-alive
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+
+Internal Server Errorroot@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# 

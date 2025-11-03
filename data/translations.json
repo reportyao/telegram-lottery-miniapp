@@ -1,0 +1,419 @@
+{
+  "app": {
+    "title": {
+      "tg": "Платформаи қурғакашӣ",
+      "ru": "Платформа лотереи",
+      "en": "Lottery Platform"
+    },
+    "description": {
+      "tg": "Платформаи онлайн қурғакашӣ",
+      "ru": "Онлайн-платформа лотереи",
+      "en": "Online lottery platform"
+    }
+  },
+  "nav": {
+    "home": {
+      "tg": "Асосӣ",
+      "ru": "Главная",
+      "en": "Home"
+    },
+    "products": {
+      "tg": "Молҳо",
+      "ru": "Товары",
+      "en": "Products"
+    },
+    "my": {
+      "tg": "Ман",
+      "ru": "Мой",
+      "en": "My"
+    },
+    "orders": {
+      "tg": "Фармоишҳо",
+      "ru": "Заказы",
+      "en": "Orders"
+    },
+    "referral": {
+      "tg": "Тавсия",
+      "ru": "Реферал",
+      "en": "Referral"
+    },
+    "market": {
+      "tg": "Бозор",
+      "ru": "Рынок",
+      "en": "Market"
+    },
+    "my_sales": {
+      "tg": "Фурӯшҳои ман",
+      "ru": "Мои продажи",
+      "en": "My Sales"
+    },
+    "profile": {
+      "tg": "Профил",
+      "ru": "Профиль",
+      "en": "Profile"
+    },
+    "debug": {
+      "tg": "Маҳкамкунӣ",
+      "ru": "Отладка",
+      "en": "Debug"
+    }
+  },
+  "home": {
+    "welcome": {
+      "tg": "Хуш омадед ба платформаи қурғакашӣ",
+      "ru": "Добро пожаловать на платформу лотереи",
+      "en": "Welcome to the lottery platform"
+    },
+    "hot_products": {
+      "tg": "Молҳои машҳур",
+      "ru": "Популярные товары",
+      "en": "Hot Products"
+    },
+    "view_all": {
+      "tg": "Ҳамаро дидан",
+      "ru": "Посмотреть все",
+      "en": "View All"
+    }
+  },
+  "product": {
+    "price": {
+      "tg": "Нарх",
+      "ru": "Цена",
+      "en": "Price"
+    },
+    "stock": {
+      "tg": "Захира",
+      "ru": "Запас",
+      "en": "Stock"
+    },
+    "shares": {
+      "tg": "Ҳиссаҳо",
+      "ru": "Доли",
+      "en": "Shares"
+    },
+    "per_share": {
+      "tg": "Барои як ҳисса",
+      "ru": "За долю",
+      "en": "Per Share"
+    },
+    "participate": {
+      "tg": "Иштирок кардан",
+      "ru": "Участвовать",
+      "en": "Participate"
+    },
+    "sold": {
+      "tg": "Фурӯхта шуд",
+      "ru": "Продано",
+      "en": "Sold"
+    },
+    "remaining": {
+      "tg": "Боқимонда",
+      "ru": "Осталось",
+      "en": "Remaining"
+    },
+    "no_image": {
+      "tg": "Расми мавҷуд нест",
+      "ru": "Нет изображения",
+      "en": "No Image"
+    },
+    "no_active_lottery": {
+      "tg": "Лотереяи фаъол вуҷуд надорад",
+      "ru": "Нет активной лотереи",
+      "en": "No active lottery"
+    },
+    "view_details": {
+      "tg": "Тафсилотҳоро дидан",
+      "ru": "Смотреть детали",
+      "en": "View Details"
+    },
+    "participate_now": {
+      "tg": "Ҳоло иштирок кардан",
+      "ru": "Участвовать сейчас",
+      "en": "Participate Now"
+    }
+  },
+  "lottery": {
+    "total_shares": {
+      "tg": "Ҳамаи ҳиссаҳо",
+      "ru": "Всего долей",
+      "en": "Total Shares"
+    },
+    "sold_shares": {
+      "tg": "Ҳиссаҳои фурӯхташуда",
+      "ru": "Продано долей",
+      "en": "Sold Shares"
+    },
+    "price_per_share": {
+      "tg": "Нархи як ҳисса",
+      "ru": "Цена за долю",
+      "en": "Price per Share"
+    },
+    "select_shares": {
+      "tg": "Ҳиссаҳоро интихоб кунед",
+      "ru": "Выберите доли",
+      "en": "Select Shares"
+    },
+    "confirm_participate": {
+      "tg": "Тасдиқ кардан",
+      "ru": "Подтвердить",
+      "en": "Confirm Participation"
+    },
+    "total_amount": {
+      "tg": "Ҳамаи маблағ",
+      "ru": "Общая сумма",
+      "en": "Total Amount"
+    },
+    "your_balance": {
+      "tg": "Ҳиссаи шумо",
+      "ru": "Ваш баланс",
+      "en": "Your Balance"
+    },
+    "select_shares_number": {
+      "tg": "Ҳиссаҳоро интихоб кунед (Макс: {max})",
+      "ru": "Выберите доли (Макс.: {max})",
+      "en": "Select Shares (Max: {max})"
+    },
+    "available": {
+      "tg": "Мавҷуд",
+      "ru": "Доступно",
+      "en": "Available"
+    },
+    "max_limit": {
+      "tg": "Маҳдудияти максимум",
+      "ru": "Максимальный лимит",
+      "en": "Max limit"
+    },
+    "status": {
+      "active": {
+        "tg": "Фаъол",
+        "ru": "Активно",
+        "en": "Active"
+      },
+      "ready_to_draw": {
+        "tg": "Омодаи қурғакашӣ",
+        "ru": "Готово к розыгрышу",
+        "en": "Ready to Draw"
+      },
+      "completed": {
+        "tg": "Анҷом ёфт",
+        "ru": "Завершено",
+        "en": "Completed"
+      },
+      "cancelled": {
+        "tg": "Бекор карда шуд",
+        "ru": "Отменено",
+        "en": "Cancelled"
+      }
+    }
+  },
+  "user": {
+    "balance": {
+      "tg": "Боқимонда",
+      "ru": "Баланс",
+      "en": "Balance"
+    },
+    "total_spent": {
+      "tg": "Ҳамагӣ харҷ шуд",
+      "ru": "Всего потрачено",
+      "en": "Total Spent"
+    },
+    "total_wins": {
+      "tg": "Ҳамаи ғалабаҳо",
+      "ru": "Всего выигрышей",
+      "en": "Total Wins"
+    },
+    "participations": {
+      "tg": "Иштирокҳо",
+      "ru": "Участия",
+      "en": "Participations"
+    },
+    "referrals": {
+      "tg": "Тавсияҳо",
+      "ru": "Рефералы",
+      "en": "Referrals"
+    },
+    "profile": {
+      "tg": "Профил",
+      "ru": "Профиль",
+      "en": "Profile"
+    },
+    "transactions": {
+      "tg": "Муомилотҳо",
+      "ru": "Транзакции",
+      "en": "Transactions"
+    },
+    "my_wins": {
+      "tg": "Ғалабаҳои ман",
+      "ru": "Мои выигрыши",
+      "en": "My Wins"
+    }
+  },
+  "order": {
+    "create": {
+      "tg": "Фармоиш эҷод кардан",
+      "ru": "Создать заказ",
+      "en": "Create Order"
+    },
+    "status": {
+      "pending": {
+        "tg": "Интизор",
+        "ru": "Ожидание",
+        "en": "Pending"
+      },
+      "paid": {
+        "tg": "Пардохт шуд",
+        "ru": "Оплачено",
+        "en": "Paid"
+      },
+      "completed": {
+        "tg": "Анҷом ёфт",
+        "ru": "Завершено",
+        "en": "Completed"
+      },
+      "cancelled": {
+        "tg": "Бекор карда шуд",
+        "ru": "Отменено",
+        "en": "Cancelled"
+      }
+    }
+  },
+  "referral": {
+    "title": {
+      "tg": "Дӯстонро даъват кунед",
+      "ru": "Пригласить друзей",
+      "en": "Invite Friends"
+    },
+    "your_code": {
+      "tg": "Рамзи ман",
+      "ru": "Мой код",
+      "en": "My Code"
+    },
+    "invite_link": {
+      "tg": "Истиноди даъват",
+      "ru": "Ссылка приглашения",
+      "en": "Invite Link"
+    },
+    "total_referrals": {
+      "tg": "Ҳамаи тавсияҳо",
+      "ru": "Всего рефералов",
+      "en": "Total Referrals"
+    },
+    "total_rewards": {
+      "tg": "Ҳамаи мукофотҳо",
+      "ru": "Всего наград",
+      "en": "Total Rewards"
+    },
+    "copy": {
+      "tg": "Нусхабардорӣ",
+      "ru": "Копировать",
+      "en": "Copy"
+    },
+    "share": {
+      "tg": "Мубодила",
+      "ru": "Поделиться",
+      "en": "Share"
+    }
+  },
+  "common": {
+    "loading": {
+      "tg": "Боргирӣ...",
+      "ru": "Загрузка...",
+      "en": "Loading..."
+    },
+    "error": {
+      "tg": "Хатогӣ",
+      "ru": "Ошибка",
+      "en": "Error"
+    },
+    "success": {
+      "tg": "Муваффақият",
+      "ru": "Успех",
+      "en": "Success"
+    },
+    "confirm": {
+      "tg": "Тасдиқ",
+      "ru": "Подтвердить",
+      "en": "Confirm"
+    },
+    "cancel": {
+      "tg": "Бекор кардан",
+      "ru": "Отменить",
+      "en": "Cancel"
+    },
+    "close": {
+      "tg": "Пӯшидан",
+      "ru": "Закрыть",
+      "en": "Close"
+    },
+    "save": {
+      "tg": "Нигоҳ доштан",
+      "ru": "Сохранить",
+      "en": "Save"
+    },
+    "submit": {
+      "tg": "Фиристодан",
+      "ru": "Отправить",
+      "en": "Submit"
+    },
+    "retry": {
+      "tg": "Дубора кӯшиш",
+      "ru": "Повторить",
+      "en": "Retry"
+    },
+    "insufficient_balance": {
+      "tg": "Маблағи нокифоя",
+      "ru": "Недостаточно средств",
+      "en": "Insufficient Balance"
+    },
+    "operation_success": {
+      "tg": "Амалиёт муваффақ",
+      "ru": "Операция успешна",
+      "en": "Operation Success"
+    },
+    "operation_failed": {
+      "tg": "Амалиёт ношуд",
+      "ru": "Операция не удалась",
+      "en": "Operation Failed"
+    },
+    "processing": {
+      "tg": "Коркард...",
+      "ru": "Обработка...",
+      "en": "Processing..."
+    },
+    "network_error": {
+      "tg": "Паём бо Интернет вуҷуд надорад. Иттилооти шабакаи худро санчед.",
+      "ru": "Нет подключения к интернету. Проверьте сеть.",
+      "en": "No internet connection. Please check your network."
+    },
+    "please_login_first": {
+      "tg": "Аввал ба система ворид шавед",
+      "ru": "Пожалуйста, сначала выполните вход",
+      "en": "Please login first"
+    },
+    "invalid_shares": {
+      "tg": "Миқдори ҳиссаҳо нодуруст аст",
+      "ru": "Неверное количество долей",
+      "en": "Invalid number of shares"
+    },
+    "network_error_short": {
+      "tg": "Хатои шабака. Лутфан такрор кунед.",
+      "ru": "Ошибка сети. Повторите попытку.",
+      "en": "Network error. Please try again."
+    },
+    "insufficient_balance_for_transaction": {
+      "tg": "Барои ин муомилот маблағи нокифоя",
+      "ru": "Недостаточно средств для этой транзакции",
+      "en": "Insufficient balance for this transaction"
+    },
+    "not_enough_shares": {
+      "tg": "Ҳиссаҳои кофӣ мавҷуд нест",
+      "ru": "Недостаточно доступных долей",
+      "en": "Not enough shares available"
+    },
+    "participation_failed": {
+      "tg": "Иштирок карда натавонистам. Лутфан такрор кунед.",
+      "ru": "Не удалось участвовать. Повторите попытку.",
+      "en": "Failed to participate. Please try again."
+    }
+  }
+}

@@ -1,0 +1,197 @@
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# # 检查Next.js版本和配置
+cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp
+echo "=== Next.js版本检查 ==="
+node --version
+npm --version  
+npm list next
+=== Next.js版本检查 ===
+v20.19.5
+10.8.2
+telegram-lottery-miniapp@1.0.0 /root/telegram-lottery-miniapp/telegram-lottery-miniapp
+└── next@14.2.33 -> ./node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next
+
+root@iZj6c0wgvce81u5p5jgrd4Z:~/telegram-lottery-miniapp/telegram-lottery-miniapp# === 备用解决方案：检查Next.js版本和配置 ===
+
+如果API仍然404，请执行以下检查：
+
+# 1. 检查Next.js版本和配置
+cd /root/telegram-lottery-miniapp/telegram-lottery-miniapp
+echo "=== Next.js版本检查 ==="
+node --version
+npm --version
+npm list next
+
+echo ""
+echo "=== package.json完整内容 ==="
+cat package.json
+
+echo ""
+echo "=== 检查项目类型 ==="
+ls -la ./
+echo ""
+echo "是否有tsconfig.json:"
+ls -la tsconfig.json 2>/dev/null || echo "tsconfig.json不存在"
+
+echo ""
+echo "=== 检查pages目录（如果是旧Next.js） ==="
+if [ -d "pages" ]; then
+    echo "发现pages目录，这是一个旧版Next.js项目"
+    echo "pages目录内容:"
+    ls -la pages/
+    echo ""
+    echo "尝试创建pages API路由..."
+    mkdir -p pages/api/products
+    cat > pages/api/products.js << 'PAGEEF'
+export default function handler(req, res) {
+  res.status(200).json({ 
+    message: 'Pages API working!',
+    products: [
+      { id: '1', title: 'iPhone 15', price: 999 },
+      { id: '2', title: 'MacBook', price: 1299 }
+    ]
+  });
+}
+PAGEEF
+    echo "创建了pages/api/products.js"
+fi
+
+echo ""
+echo "=== 检查动态路由配置 ==="
+echo "检查app目录结构："
+find app -name "*.tsx" -o -name "*.ts" | head -10
+
+echo ""
+echo "=== 强制重新安装依赖 ==="
+echo "清理node_modules..."
+rm -rf node_modules
+rm -rf package-lock.json
+echo "重新安装依赖..."
+npm install
+
+echo ""
+echo "=== 重新启动应用 ==="
+pkill -f "npm"
+sleep 3
+npm run dev
+===: command not found
+如果API仍然404，请执行以下检查：: command not found
+=== Next.js版本检查 ===
+v20.19.5
+10.8.2
+telegram-lottery-miniapp@1.0.0 /root/telegram-lottery-miniapp/telegram-lottery-miniapp
+└── next@14.2.33 -> ./node_modules/.pnpm/next@14.2.33_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next
+
+
+=== package.json完整内容 ===
+{
+  "name": "telegram-lottery-miniapp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@telegram-apps/sdk": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.2.0"
+  }
+}
+
+=== 检查项目类型 ===
+total 276
+drwxrwxr-x 11 admin admin   4096 Nov  2 17:42 .
+drwxrwxr-x  9 admin admin   4096 Nov  2 17:32 ..
+drwxrwxr-x  9 admin admin   4096 Nov  2 17:42 app
+-rw-r--r--  1 root  root     698 Nov  2 17:37 app.log
+drwxrwxr-x  2 admin admin   4096 Nov  2 12:36 bot
+-rw-rw-r--  1 admin admin  10305 Nov  2 12:36 COMPLETE_FEATURES.md
+drwxrwxr-x  2 admin admin   4096 Nov  2 12:36 components
+-rw-rw-r--  1 admin admin   8645 Nov  2 12:36 DELIVERY_REPORT.md
+drwxrwxr-x  2 admin admin   4096 Nov  2 12:36 docs
+-rw-rw-r--  1 admin admin    622 Nov  2 12:36 .env.example
+-rw-r--r--  1 root  root     305 Nov  2 17:23 .env.local
+-rw-rw-r--  1 admin admin   8495 Nov  2 12:36 FEATURE_UPDATE_v3.md
+-rw-rw-r--  1 admin admin    408 Nov  2 12:36 .gitignore
+drwxr-xr-x  2 admin admin   4096 Nov  2 12:44 lib
+drwxrwxr-x  2 admin admin   4096 Nov  2 12:36 locales
+drwxr-xr-x  5 root  root    4096 Nov  2 17:42 .next
+-rw-rw-r--  1 admin admin    969 Nov  2 12:36 next.config.js
+-rw-r--r--  1 root  root     228 Nov  2 17:23 next-env.d.ts
+drwxr-xr-x  7 root  root    4096 Nov  2 12:38 node_modules
+-rw-rw-r--  1 admin admin    711 Nov  2 12:36 package.json
+-rw-r--r--  1 root  root  125490 Nov  2 12:38 pnpm-lock.yaml
+-rw-rw-r--  1 admin admin   8993 Nov  2 12:36 PROJECT_SUMMARY.md
+-rw-rw-r--  1 admin admin   6331 Nov  2 12:36 QUICKSTART.md
+-rw-rw-r--  1 admin admin   7645 Nov  2 12:36 README.md
+-rw-rw-r--  1 admin admin    785 Nov  2 12:36 tailwind.config.js
+-rw-rw-r--  1 admin admin    644 Nov  2 12:36 tsconfig.json
+drwxrwxr-x  2 admin admin   4096 Nov  2 12:36 types
+-rw-rw-r--  1 admin admin   5555 Nov  2 12:36 USER_GUIDE.md
+
+是否有tsconfig.json:
+-rw-rw-r-- 1 admin admin 644 Nov  2 12:36 tsconfig.json
+
+=== 检查pages目录（如果是旧Next.js） ===
+
+=== 检查动态路由配置 ===
+检查app目录结构：
+app/profile/page.tsx
+app/layout.tsx
+app/topup/page.tsx
+app/api/get-products/route.ts
+app/api/health/route.ts
+app/referral/page.tsx
+app/admin/users/page.tsx
+app/admin/dashboard/page.tsx
+app/admin/products/page.tsx
+app/admin/lottery-rounds/page.tsx
+
+=== 强制重新安装依赖 ===
+清理node_modules...
+重新安装依赖...
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 399 packages in 48s
+
+152 packages are looking for funding
+  run `npm fund` for details
+
+=== 重新启动应用 ===
+
+> telegram-lottery-miniapp@1.0.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+ ⚠ Port 3002 is in use, trying 3003 instead.
+ ⚠ Port 3003 is in use, trying 3004 instead.
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3004
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · optimizeCss
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
