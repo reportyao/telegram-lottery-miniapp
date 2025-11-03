@@ -3,80 +3,52 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "代码审查和问题诊断",
-        "details": "1. 检查当前工作目录的项目结构\n2. 对比GitHub上的完整代码\n3. 识别缺失的文件和配置\n4. 分析lib/supabase.ts的ANON_KEY语法问题\n5. 审查缺失的hooks和组件",
-        "status": "completed",
+        "content": "代码语法错误检查",
+        "details": "1. 检查所有TypeScript/React文件的语法错误 2. 检查配置文件语法 3. 检查函数定义和调用 4. 修复发现的所有语法问题",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "修复核心配置文件问题",
-        "details": "1. 修复lib/supabase.ts的ANON_KEY语法错误\n2. 确保所有Supabase配置正确\n3. 创建缺失的lib目录和配置文件\n4. 验证路径配置的准确性",
-        "status": "completed",
+        "content": "前端功能完整性检查",
+        "details": "1. 检查所有页面组件功能完整性 2. 验证路由和导航 3. 检查状态管理和数据流 4. 验证用户交互逻辑",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "修复hooks和组件依赖",
-        "details": "1. 创建缺失的@/hooks/useTelegram模块\n2. 修复my-resales页面的组件引用\n3. 修复resale-market页面的hooks引用\n4. 确保所有页面组件正确导入",
-        "status": "completed",
+        "content": "API端点完整性检查",
+        "details": "1. 检查Supabase Edge Functions完整性 2. 验证API路由定义 3. 检查API响应格式 4. 验证错误处理机制",
+        "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "验证和测试修复效果",
-        "details": "1. 检查项目构建是否成功\n2. 验证所有页面路由正常\n3. 确认API调用配置正确\n4. 测试基础功能运行",
-        "status": "completed",
-        "priority": "medium"
+        "content": "数据库字段完整性检查",
+        "details": "1. 检查types/database.ts类型定义完整性 2. 验证表结构与业务逻辑匹配 3. 检查外键关系 4. 验证字段约束和默认值",
+        "status": "pending",
+        "priority": "high"
       },
       "5": {
         "id": "5",
-        "content": "更新GitHub代码",
-        "details": "1. 将修复后的代码推送到GitHub\n2. 更新相关文档说明\n3. 确保代码版本一致",
-        "status": "completed",
+        "content": "静态代码Bug检查",
+        "details": "1. 检查硬编码值和magic numbers 2. 验证类型安全 3. 检查未处理的异常 4. 优化代码性能和可读性",
+        "status": "pending",
         "priority": "medium"
       },
       "6": {
         "id": "6",
-        "content": "修复Next.js版本兼容性问题",
-        "details": "1. 将Next.js从12.3.4降级到12.2.5\n2. 更新eslint-config-next版本保持一致\n3. 解决Node.js 18.19.0兼容性问题",
-        "status": "completed",
+        "content": "功能模块完整性验证",
+        "details": "1. 验证每个业务模块是否有完整的前后端对应 2. 检查数据流完整性 3. 验证用户流程的端到端完整性",
+        "status": "pending",
         "priority": "high"
       },
       "7": {
         "id": "7",
-        "content": "修复next.config.js配置重复",
-        "details": "删除重复的swcMinify: true配置项",
-        "status": "completed",
+        "content": "GitHub推送准备",
+        "details": "1. 汇总所有修复 2. 创建提交信息 3. 推送到GitHub https://github.com/reportyao/telegram-lottery-miniapp",
+        "status": "pending",
         "priority": "medium"
-      },
-      "8": {
-        "id": "8",
-        "content": "优化React Hooks SSR处理",
-        "details": "1. 优化lib/performance.ts中的useNetworkStatus函数\n2. 改进客户端检查逻辑\n3. 确保服务器端渲染兼容性",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "9": {
-        "id": "9",
-        "content": "配置环境变量和依赖管理",
-        "details": "1. 创建.env.local文件包含正确Supabase配置\n2. 使用--prefix参数解决npm安装权限问题\n3. 重新安装所有依赖包",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "10": {
-        "id": "10",
-        "content": "验证TypeScript编译和构建",
-        "details": "1. 运行TypeScript类型检查(tsc --noEmit)\n2. 验证所有配置文件正确性\n3. 确认项目结构完整性\n4. 生成最终修复报告",
-        "status": "completed",
-        "priority": "high"
-      },
-      "11": {
-        "id": "11",
-        "content": "修复hooks无限递归错误",
-        "details": "1. 发现并修复hooks/useTelegram.ts中的无限递归\n2. 重命名SDK导入避免函数名冲突\n3. 验证修复后的TypeScript编译\n4. 确认构建测试通过",
-        "status": "completed",
-        "priority": "high"
       }
     }
   }
