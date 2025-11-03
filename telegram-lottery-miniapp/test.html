@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram彩票小程序 - 测试版</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .product-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 彩票平台</h1>
+            <p id="status">正在加载...</p>
+        </div>
+
+        <div id="user-info" style="display: none;">
+            <h2>用户信息</h2>
+            <p>用户名: <span id="username"></span></p>
+            <p>余额: $<span id="balance">0</span></p>
+            <button class="button" onclick="refreshBalance()">刷新余额</button>
+        </div>
+
+        <div id="products-section" style="display: none;">
+            <h2>热门产品</h2>
+            <div id="products-list"></div>
+        </div>
+
+        <div id="test-section">
+            <h2>API测试</h2>
+            <button class="button" onclick="testGetProducts()">测试获取产品</button>
+            <button class="button" onclick="testTelegramAuth()">测试Telegram认证</button>
+            <button class="button" onclick="testCreateOrder()">测试创建订单</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Supabase配置
+        const SUPABASE_URL = 'https://mftfgofnosakobjfpzss.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mdGZnb2Zub3Nha29iamZwenNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwNDM4OTgsImV4cCI6MjA3NzYxOTg5OH0.9TYA-VqkitQayTkS4IXwOW4aqQ3aa2UKPH2IqBddbJ8';
+        
+        let currentUser = null;
+        let currentBalance = 0;
+
+        // 初始化Telegram WebApp
+        function initTelegramApp() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                
+                const user = window.Telegram.WebApp.initDataUnsafe.user;
+                if (user) {
+                    document.getElementById('username').textContent = user.username || user.first_name || '未知用户';
+                    document.getElementById('user-info').style.display = 'block';
+                    
+                    // 模拟认证
+                    currentUser = {
+                        id: user.id,
+                        username: user.username,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        language_code: user.language_code
+                    };
+                    
+                    updateStatus('✅ Telegram WebApp已初始化', 'success');
+                } else {
+                    updateStatus('⚠️ 未检测到Telegram用户信息，使用测试模式', 'error');
+                }
+            } else {
+                updateStatus('⚠️ 未在Telegram环境中运行，使用测试模式', 'error');
+            }
+        }
+
+        // 更新状态信息
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = type;
+        }
+
+        // 测试获取产品
+        async function testGetProducts() {
+            try {
+                updateStatus('正在测试获取产品API...');
+                
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/get-products`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    updateStatus('✅ 获取产品API测试成功', 'success');
+                    displayProducts(result.data.products);
+                    document.getElementById('products-section').style.display = 'block';
+                } else {
+                    throw new Error(result.error?.message || '未知错误');
+                }
+            } catch (error) {
+                updateStatus(`❌ 获取产品API失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 显示产品列表
+        function displayProducts(products) {
+            const productsList = document.getElementById('products-list');
+            productsList.innerHTML = '';
+
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-card';
+                productDiv.innerHTML = `
+                    <h3>${product.name.zh || product.name.en}</h3>
+                    <p>价格: $${product.price}</p>
+                    <p>库存: ${product.stock}</p>
+                    <p>活跃轮次: ${product.active_rounds.length}</p>
+                `;
+                productsList.appendChild(productDiv);
+            });
+        }
+
+        // 测试Telegram认证
+        async function testTelegramAuth() {
+            try {
+                updateStatus('正在测试Telegram认证API...');
+                
+                const testUserData = {
+                    telegram_id: 123456789,
+                    username: 'test_user',
+                    full_name: 'Test User',
+                    language: 'zh',
+                    photo_url: null,
+                    is_premium: false
+                };
+
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/telegram-auth`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'apikey': SUPABASE_ANON_KEY
+                    },
+                    body: JSON.stringify(testUserData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    updateStatus('✅ Telegram认证API测试成功', 'success');
+                    if (result.data.user) {
+                        currentUser = result.data.user;
+                        currentBalance = result.data.user.balance || 0;
+                        document.getElementById('balance').textContent = currentBalance;
+                        document.getElementById('user-info').style.display = 'block';
+                    }
+                } else {
+                    throw new Error(result.error?.message || '未知错误');
+                }
+            } catch (error) {
+                updateStatus(`❌ Telegram认证API失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试创建订单
+        async function testCreateOrder() {
+            try {
+                if (!currentUser || !currentUser.id) {
+                    throw new Error('请先进行用户认证');
+                }
+
+                updateStatus('正在测试创建订单API...');
+                
+                const orderData = {
+                    user_id: currentUser.id,
+                    amount: 50,
+                    payment_method: 'test'
+                };
+
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/create-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'apikey': SUPABASE_ANON_KEY
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    updateStatus('✅ 创建订单API测试成功', 'success');
+                    if (result.data.new_balance !== undefined) {
+                        currentBalance = result.data.new_balance;
+                        document.getElementById('balance').textContent = currentBalance;
+                    }
+                } else {
+                    throw new Error(result.error?.message || '未知错误');
+                }
+            } catch (error) {
+                updateStatus(`❌ 创建订单API失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 刷新余额
+        async function refreshBalance() {
+            if (currentUser && currentUser.id) {
+                await testTelegramAuth();
+            }
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            setTimeout(initTelegramApp, 100);
+        });
+    </script>
+</body>
+</html>
