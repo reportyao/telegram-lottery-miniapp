@@ -1,168 +1,156 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { telegram } from '@/lib/telegram'
-import { supabase } from '@/lib/supabase'
-import { User, UserStats, Participation, LotteryRound } from '@/types/database'
+import { useState, useEffect } from 'react'
 import Navigation from '@/components/Navigation'
-import Link from 'next/link'
+import UserBalance from '@/components/UserBalance'
+import { supabase } from '@/lib/supabase'
+import { useTelegram } from '@/hooks/useTelegram'
+
+interface UserProfile {
+  id: string
+  telegram_id: number
+  full_name?: string
+  username?: string
+  balance: number
+  created_at: string
+}
+
+interface UserStats {
+  total_participations: number
+  total_wins: number
+  total_spent: number
+}
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [stats, setStats] = useState<UserStats | null>(null)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [stats, setStats] = useState<UserStats>({
+    total_participations: 0,
+    total_wins: 0,
+    total_spent: 0
+  })
   const [loading, setLoading] = useState(true)
+  const { user } = useTelegram()
 
   useEffect(() => {
-    loadProfile()
-  }, [])
+    async function loadProfile() {
+      if (!user) return
 
-  const loadProfile = async () => {
-    try {
-      setLoading(true)
-      
-      const authData = await telegram.authenticateUser()
-      setUser(authData.user)
+      try {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('*')
+          .eq('telegram_id', user.id)
+          .single()
 
-      // 获取用户统计数据
-      const response = await fetch(`/functions/v1/user-profile?user_id=${authData.user.id}`)
-      const result = await response.json()
+        if (userData) {
+          setProfile(userData)
 
-      if (result.success && result.data?.stats) {
-        setStats(result.data.stats)
-      } else {
-        console.warn('Failed to load user stats:', result.error)
+          // 获取用户统计数据
+          const { data: participations } = await supabase
+            .from('participations')
+            .select('*')
+            .eq('user_id', userData.id)
+
+          const totalParticipations = participations?.length || 0
+          const totalWins = 0 // 需要通过join lottery_rounds表获取winner_id
+          const totalSpent = participations?.reduce((sum, p) => sum + p.amount_paid, 0) || 0
+
+          setStats({
+            total_participations: totalParticipations,
+            total_wins: totalWins,
+            total_spent: totalSpent
+          })
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error)
+      } finally {
+        setLoading(false)
       }
-    } catch (err: any) {
-      console.error('Profile load error:', err)
-      // 可以添加错误状态处理
-    } finally {
-      setLoading(false)
     }
-  }
+
+    loadProfile()
+  }, [user])
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-500">无法加载用户信息</p>
       </div>
     )
   }
 
   return (
-    <div className="pb-20 min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-primary text-white p-6">
-        <div className="flex items-center space-x-4">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl">
-            👤
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{user?.full_name || user?.username || 'User'}</h1>
-            <p className="text-sm opacity-90">@{user?.username || 'anonymous'}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Balance Card */}
-      <div className="p-4">
-        <div className="bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg p-6 shadow-lg">
-          <p className="text-sm opacity-90 mb-2">Current Balance</p>
-          <p className="text-4xl font-bold">${user ? 
-            typeof user.balance === 'string' 
-              ? parseFloat(user.balance).toFixed(2)
-              : user.balance?.toFixed(2) || '0.00'
-            : '0.00'}</p>
-          <Link href="/topup">
-            <button className="mt-4 bg-white text-primary px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Top Up
-            </button>
-          </Link>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      {stats && (
-        <div className="p-4 grid grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow">
-            <p className="text-gray-600 text-sm mb-1">Total Spent</p>
-            <p className="text-2xl font-bold text-primary">${stats.total_spent.toFixed(2)}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <p className="text-gray-600 text-sm mb-1">Total Wins</p>
-            <p className="text-2xl font-bold text-green-600">{stats.total_wins}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <p className="text-gray-600 text-sm mb-1">Participations</p>
-            <p className="text-2xl font-bold text-blue-600">{stats.total_participations}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <p className="text-gray-600 text-sm mb-1">Referrals</p>
-            <p className="text-2xl font-bold text-orange-600">{stats.total_referrals}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Menu Items */}
-      <div className="p-4 space-y-2">
-        <Link href="/orders">
-          <div className="bg-white rounded-lg shadow">
-            <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-              <span className="flex items-center space-x-3">
-                <span className="text-2xl">🎯</span>
-                <span className="font-medium">My Participations</span>
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <div className="max-w-md mx-auto p-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">个人中心</h1>
+        
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div className="text-center mb-4">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-2xl text-blue-600">
+                {profile.full_name?.charAt(0) || profile.username?.charAt(0) || '👤'}
               </span>
-              <span className="text-gray-400">›</span>
-            </button>
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {profile.full_name || profile.username || '用户'}
+            </h2>
+            {profile.username && (
+              <p className="text-sm text-gray-600">@{profile.username}</p>
+            )}
           </div>
-        </Link>
-        <Link href="/my-resales">
-          <div className="bg-white rounded-lg shadow">
-            <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-              <span className="flex items-center space-x-3">
-                <span className="text-2xl">💰</span>
-                <span className="font-medium">My Resales</span>
-              </span>
-              <span className="text-gray-400">›</span>
-            </button>
-          </div>
-        </Link>
-        <Link href="/topup">
-          <div className="bg-white rounded-lg shadow">
-            <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-              <span className="flex items-center space-x-3">
-                <span className="text-2xl">💳</span>
-                <span className="font-medium">Top Up Balance</span>
-              </span>
-              <span className="text-gray-400">›</span>
-            </button>
-          </div>
-        </Link>
-        <div className="bg-white rounded-lg shadow">
-          <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <span className="flex items-center space-x-3">
-              <span className="text-2xl">📋</span>
-              <span className="font-medium">Transaction History</span>
-            </span>
-            <span className="text-gray-400">›</span>
-          </button>
+          
+          <UserBalance user={profile} />
         </div>
-        <div className="bg-white rounded-lg shadow">
-          <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <span className="flex items-center space-x-3">
-              <span className="text-2xl">🏆</span>
-              <span className="font-medium">My Wins</span>
-            </span>
-            <span className="text-gray-400">›</span>
-          </button>
+
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">统计信息</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-600">参与次数</span>
+              <span className="font-medium">{stats.total_participations}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">中奖次数</span>
+              <span className="font-medium text-green-600">{stats.total_wins}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">总消费</span>
+              <span className="font-medium">{stats.total_spent}T</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">胜率</span>
+              <span className="font-medium">
+                {stats.total_participations > 0 
+                  ? ((stats.total_wins / stats.total_participations) * 100).toFixed(1) + '%'
+                  : '0%'
+                }
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="bg-white rounded-lg shadow">
-          <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <span className="flex items-center space-x-3">
-              <span className="text-2xl">⚙️</span>
-              <span className="font-medium">Settings</span>
-            </span>
-            <span className="text-gray-400">›</span>
-          </button>
+
+        <div className="bg-white rounded-lg shadow-sm p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">账户信息</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-600">用户ID</span>
+              <span className="font-mono text-sm">{profile.telegram_id}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">注册时间</span>
+              <span className="text-sm">
+                {new Date(profile.created_at).toLocaleDateString('zh-CN')}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
