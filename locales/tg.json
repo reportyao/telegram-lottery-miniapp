@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Платформаи қурғакашӣ",
+    "description": "Платформаи онлайн қурғакашӣ"
+  },
+  "nav": {
+    "home": "Асосӣ",
+    "products": "Молҳо",
+    "my": "Ман",
+    "orders": "Фармоишҳо",
+    "referral": "Тавсия"
+  },
+  "home": {
+    "welcome": "Хуш омадед ба платформаи қурғакашӣ",
+    "hot_products": "Молҳои машҳур",
+    "view_all": "Ҳамаро дидан"
+  },
+  "product": {
+    "price": "Нарх",
+    "stock": "Захира",
+    "shares": "Ҳиссаҳо",
+    "per_share": "Барои як ҳисса",
+    "participate": "Иштирок кардан",
+    "sold": "Фурӯхта шуд",
+    "remaining": "Боқимонда"
+  },
+  "lottery": {
+    "total_shares": "Ҳамаи ҳиссаҳо",
+    "sold_shares": "Ҳиссаҳои фурӯхташуда",
+    "price_per_share": "Нархи як ҳисса",
+    "select_shares": "Ҳиссаҳоро интихоб кунед",
+    "confirm_participate": "Тасдиқ кардан",
+    "status": {
+      "active": "Фаъол",
+      "ready_to_draw": "Омодаи қурғакашӣ",
+      "completed": "Анҷом ёфт",
+      "cancelled": "Бекор карда шуд"
+    }
+  },
+  "user": {
+    "balance": "Боқимонда",
+    "total_spent": "Ҳамагӣ харҷ шуд",
+    "total_wins": "Ҳамаи ғалабаҳо",
+    "participations": "Иштирокҳо",
+    "referrals": "Тавсияҳо",
+    "profile": "Профил",
+    "transactions": "Муомилотҳо",
+    "my_wins": "Ғалабаҳои ман"
+  },
+  "order": {
+    "create": "Фармоиш эҷод кардан",
+    "status": {
+      "pending": "Интизор",
+      "paid": "Пардохт шуд",
+      "completed": "Анҷом ёфт",
+      "cancelled": "Бекор карда шуд"
+    }
+  },
+  "referral": {
+    "title": "Дӯстонро даъват кунед",
+    "your_code": "Рамзи ман",
+    "invite_link": "Истиноди даъват",
+    "total_referrals": "Ҳамаи тавсияҳо",
+    "total_rewards": "Ҳамаи мукофотҳо",
+    "copy": "Нусхабардорӣ",
+    "share": "Мубодила"
+  },
+  "common": {
+    "loading": "Боргирӣ...",
+    "error": "Хатогӣ",
+    "success": "Муваффақият",
+    "confirm": "Тасдиқ",
+    "cancel": "Бекор кардан",
+    "close": "Пӯшидан",
+    "save": "Нигоҳ доштан",
+    "submit": "Фиристодан",
+    "retry": "Дубора кӯшиш",
+    "insufficient_balance": "Маблағи нокифоя",
+    "operation_success": "Амалиёт муваффақ",
+    "operation_failed": "Амалиёт ношуд"
+  }
+}
