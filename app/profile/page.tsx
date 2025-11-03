@@ -9,9 +9,10 @@ import { useTelegram } from '@/hooks/useTelegram'
 interface UserProfile {
   id: string
   telegram_id: number
-  full_name?: string
+  first_name?: string
+  last_name?: string
   username?: string
-  balance: number
+  coin_balance: number
   created_at: string
 }
 
@@ -96,18 +97,18 @@ export default function ProfilePage() {
           <div className="text-center mb-4">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
               <span className="text-2xl text-blue-600">
-                {profile.full_name?.charAt(0) || profile.username?.charAt(0) || '👤'}
+                {profile.first_name?.charAt(0) || profile.username?.charAt(0) || '👤'}
               </span>
             </div>
             <h2 className="text-lg font-semibold text-gray-900">
-              {profile.full_name || profile.username || '用户'}
+              {[profile.first_name, profile.last_name].filter(Boolean).join(' ') || profile.username || '用户'}
             </h2>
             {profile.username && (
               <p className="text-sm text-gray-600">@{profile.username}</p>
             )}
           </div>
           
-          <UserBalance user={profile} />
+          <UserBalance user={profile} balance={profile.coin_balance} />
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">

@@ -54,7 +54,7 @@ export default function ResaleMarketPage() {
     try {
       const { data: userData } = await supabase
         .from('users')
-        .select('id, balance')
+        .select('id, coin_balance')
         .eq('telegram_id', user.id)
         .single()
 
@@ -63,7 +63,7 @@ export default function ResaleMarketPage() {
         return
       }
 
-      if (userData.balance < price) {
+      if (userData.coin_balance < price) {
         alert('余额不足')
         return
       }

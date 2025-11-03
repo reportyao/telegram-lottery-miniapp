@@ -39,9 +39,9 @@ export default function Home() {
         if (userData) {
           setUser({
             id: userData.id,
-            full_name: userData.full_name,
+            full_name: [userData.first_name, userData.last_name].filter(Boolean).join(' ') || 'User',
             username: userData.username,
-            balance: userData.balance
+            balance: userData.coin_balance || 0
           })
         }
 

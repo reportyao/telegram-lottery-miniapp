@@ -22,12 +22,12 @@ export default function TopupPage() {
       try {
         const { data: userData } = await supabase
           .from('users')
-          .select('balance')
+          .select('coin_balance')
           .eq('telegram_id', user.id)
           .single()
 
         if (userData) {
-          setBalance(userData.balance)
+          setBalance(userData.coin_balance || 0)
         }
       } catch (error) {
         console.error('Error loading balance:', error)
@@ -76,7 +76,7 @@ export default function TopupPage() {
           // 模拟支付成功，直接更新余额
           const { error: updateError } = await supabase
             .from('users')
-            .update({ balance: balance + amount })
+            .update({ coin_balance: balance + amount })
             .eq('id', userData.id)
 
           if (updateError) {
