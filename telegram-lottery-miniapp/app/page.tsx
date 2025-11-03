@@ -9,6 +9,10 @@ import ProductCard from '@/components/ProductCard'
 import UserBalance from '@/components/UserBalance'
 import Navigation from '@/components/Navigation'
 
+// 重试相关常量
+const RETRY_BASE_DELAY = 1000 // 基础延迟1秒
+const MAX_RETRIES = 3 // 最大重试次数
+
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null)
   const [products, setProducts] = useState<Product[]>([])
@@ -48,7 +52,7 @@ export default function HomePage() {
       setUser(authData.user)
 
       // Load products with retry mechanism and network optimization
-      const loadProductsWithRetry = async (retries = 3) => {
+      const loadProductsWithRetry = async (retries = MAX_RETRIES) => {
         for (let i = 0; i < retries; i++) {
           try {
             const { data, error } = await supabase.functions.invoke('get-products', {
@@ -60,8 +64,8 @@ export default function HomePage() {
             
             if (error) {
               if (i === retries - 1) throw error
-              // 等待重试
-              await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+              // 等待重试 - 指数退避
+              await new Promise(resolve => setTimeout(resolve, RETRY_BASE_DELAY * (i + 1)))
               continue
             }
 
@@ -71,7 +75,7 @@ export default function HomePage() {
             return
           } catch (err) {
             if (i === retries - 1) throw err
-            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+            await new Promise(resolve => setTimeout(resolve, RETRY_BASE_DELAY * (i + 1)))
           }
         }
       }

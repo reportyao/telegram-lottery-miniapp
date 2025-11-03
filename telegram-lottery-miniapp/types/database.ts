@@ -6,6 +6,8 @@ export interface User {
   full_name: string | null
   balance: number
   language: string
+  photo_url?: string | null
+  is_premium?: boolean
   created_at: string
   updated_at: string
 }
@@ -418,6 +420,97 @@ export const TABLES = {
   REFUND_RECORDS: 'refund_records',
   SYSTEM_TRANSACTIONS: 'system_transactions'
 } as const
+
+// API请求/响应接口定义
+export interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: string | {
+    code: string
+    message: string
+    details?: any
+  }
+  count?: number
+  message?: string
+  timestamp: string
+}
+
+// 转售相关API接口
+export interface CreateResaleRequest {
+  participation_id: string
+  shares_to_sell: number
+  price_per_share: number
+  user_id: string
+}
+
+export interface PurchaseResaleRequest {
+  resale_id: string
+  shares_to_buy: number
+  buyer_id: string
+}
+
+export interface CancelResaleRequest {
+  resale_id: string
+  user_id: string
+}
+
+export interface ResaleListRequest {
+  action: 'list' | 'my_resales' | 'create' | 'purchase' | 'cancel'
+  user_id?: string
+  resale_id?: string
+  shares_to_sell?: number
+  price_per_share?: number
+  shares_to_buy?: number
+}
+
+// 用户资料API接口
+export interface UserProfileRequest {
+  user_id: string
+}
+
+export interface UserProfileResponse {
+  user: User
+  stats: UserStats
+  participations: Participation[]
+  transactions: Transaction[]
+  resales: Resale[]
+}
+
+// 表单错误类型
+export interface FormError {
+  [key: string]: string
+}
+
+// 数据库错误处理类型
+export interface DatabaseError {
+  code: string
+  message: string
+  details?: any
+  hint?: string
+}
+
+// 分页相关类型
+export interface PaginatedResponse<T> {
+  data: T[]
+  count: number
+  page: number
+  limit: number
+  hasMore: boolean
+}
+
+// 筛选和排序类型
+export interface FilterOptions {
+  status?: string
+  category?: string
+  date_from?: string
+  date_to?: string
+  search?: string
+}
+
+export interface SortOptions {
+  field: string
+  direction: 'asc' | 'desc'
+}
 
 // 转售业务常量
 export const RESALE_CONSTANTS = {

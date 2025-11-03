@@ -24,18 +24,13 @@ export default function ProfilePage() {
       setUser(authData.user)
 
       // 获取用户统计数据
-      const { data, error } = await supabase.functions.invoke('user-profile', {
-        body: {
-          user_id: authData.user.id
-        },
-      })
+      const response = await fetch(`/functions/v1/user-profile?user_id=${authData.user.id}`)
+      const result = await response.json()
 
-      if (error) {
-        throw error
-      }
-
-      if (data?.data?.stats) {
-        setStats(data.data.stats)
+      if (result.success && result.data?.stats) {
+        setStats(result.data.stats)
+      } else {
+        console.warn('Failed to load user stats:', result.error)
       }
     } catch (err: any) {
       console.error('Profile load error:', err)
@@ -109,6 +104,39 @@ export default function ProfilePage() {
 
       {/* Menu Items */}
       <div className="p-4 space-y-2">
+        <Link href="/orders">
+          <div className="bg-white rounded-lg shadow">
+            <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <span className="flex items-center space-x-3">
+                <span className="text-2xl">🎯</span>
+                <span className="font-medium">My Participations</span>
+              </span>
+              <span className="text-gray-400">›</span>
+            </button>
+          </div>
+        </Link>
+        <Link href="/my-resales">
+          <div className="bg-white rounded-lg shadow">
+            <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <span className="flex items-center space-x-3">
+                <span className="text-2xl">💰</span>
+                <span className="font-medium">My Resales</span>
+              </span>
+              <span className="text-gray-400">›</span>
+            </button>
+          </div>
+        </Link>
+        <Link href="/topup">
+          <div className="bg-white rounded-lg shadow">
+            <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <span className="flex items-center space-x-3">
+                <span className="text-2xl">💳</span>
+                <span className="font-medium">Top Up Balance</span>
+              </span>
+              <span className="text-gray-400">›</span>
+            </button>
+          </div>
+        </Link>
         <div className="bg-white rounded-lg shadow">
           <button className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
             <span className="flex items-center space-x-3">

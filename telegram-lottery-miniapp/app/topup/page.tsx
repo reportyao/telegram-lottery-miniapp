@@ -7,6 +7,9 @@ import { User } from '@/types/database'
 import Navigation from '@/components/Navigation'
 import { useRouter } from 'next/navigation'
 
+// 充值金额常量
+const PRESET_AMOUNTS = [10, 50, 100, 500, 1000] as const
+
 export default function TopUpPage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
@@ -14,7 +17,7 @@ export default function TopUpPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const presetAmounts = [10, 50, 100, 500, 1000]
+  const presetAmounts = PRESET_AMOUNTS
 
   useEffect(() => {
     loadUser()

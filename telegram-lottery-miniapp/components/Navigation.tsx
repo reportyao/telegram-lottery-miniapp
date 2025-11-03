@@ -8,7 +8,8 @@ export default function Navigation() {
 
   const navItems = [
     { href: '/', label: 'Home', icon: '🏠' },
-    { href: '/posts', label: 'Posts', icon: '📝' },
+    { href: '/resale-market', label: 'Market', icon: '🏪' },
+    { href: '/my-resales', label: 'My Sales', icon: '💰' },
     { href: '/profile', label: 'Profile', icon: '👤' },
     { href: '/referral', label: 'Referral', icon: '👥' },
   ]
