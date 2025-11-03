@@ -23,15 +23,23 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (!existingUser) {
-      // 创建新用户
+      // 创建新用户 - 使用实际数据库字段
       const { data: newUser, error } = await supabase
         .from('users')
         .insert({
           telegram_id: id,
           username: username || null,
-          full_name: [first_name, last_name].filter(Boolean).join(' ') || null,
-          balance: 0,
-          language: 'en' // 默认语言
+          first_name: first_name || null,
+          last_name: last_name || null,
+          preferred_language: 'zh-CN', // 默认语言
+          coin_balance: 0,
+          platform_balance: 0,
+          vip_level: 0,
+          total_spent: 0,
+          free_daily_count: 3,
+          trust_score: 0,
+          is_suspicious: false,
+          has_first_lottery: false
         })
         .select()
         .single()
