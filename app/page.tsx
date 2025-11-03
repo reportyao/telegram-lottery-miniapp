@@ -1,189 +1,105 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { telegram } from '@/lib/telegram'
-import { supabase } from '@/lib/supabase'
-import { Product, User } from '@/types/database'
-import { useNetworkStatus, retryWithBackoff, trackPerformance } from '@/lib/performance'
+import { useState, useEffect } from 'react'
 import ProductCard from '@/components/ProductCard'
 import UserBalance from '@/components/UserBalance'
 import Navigation from '@/components/Navigation'
+import { useTelegram } from '@/hooks/useTelegram'
+import { supabase } from '@/lib/supabase'
+import type { Product } from '@/types/database'
 
-// 重试相关常量
-const RETRY_BASE_DELAY = 1000 // 基础延迟1秒
-const MAX_RETRIES = 3 // 最大重试次数
+interface UserInfo {
+  id: string
+  full_name?: string
+  username?: string
+  balance: number
+}
 
-export default function HomePage() {
-  const [user, setUser] = useState<User | null>(null)
+export default function Home() {
   const [products, setProducts] = useState<Product[]>([])
+  const [user, setUser] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const { isOnline, connectionType } = useNetworkStatus()
+  const { user: telegramUser } = useTelegram()
 
   useEffect(() => {
-    initializeApp()
-    trackPerformance()
-  }, [])
-
-  // 根据网络状况优化产品数据
-  const optimizeProductsForNetwork = (products: Product[], networkType: string): Product[] => {
-    // 慢网络环境下的优化
-    const slowNetworks = ['slow-2g', '2g']
-    
-    if (slowNetworks.includes(networkType)) {
-      return products.slice(0, 6) // 只加载前6个产品
-    }
-    
-    return products
-  }
-
-  const initializeApp = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      if (!isOnline) {
-        setError('No internet connection. Please check your network.')
+    async function loadData() {
+      if (!telegramUser) {
+        setLoading(false)
         return
       }
-      
-      // Authenticate with Telegram
-      const authData = await telegram.authenticateUser()
-      setUser(authData.user)
 
-      // Load products with retry mechanism and network optimization
-      const loadProductsWithRetry = async (retries = MAX_RETRIES) => {
-        for (let i = 0; i < retries; i++) {
-          try {
-            const { data, error } = await supabase.functions.invoke('get-products', {
-              headers: {
-                'X-Client-Info': 'lottery-miniapp',
-                'X-Request-ID': Date.now().toString(),
-              },
-            })
-            
-            if (error) {
-              if (i === retries - 1) throw error
-              // 等待重试 - 指数退避
-              await new Promise(resolve => setTimeout(resolve, RETRY_BASE_DELAY * (i + 1)))
-              continue
-            }
+      try {
+        // 获取用户信息
+        const { data: userData } = await supabase
+          .from('users')
+          .select('*')
+          .eq('telegram_id', telegramUser.id)
+          .single()
 
-            // 根据网络状况优化产品数据
-            const optimizedProducts = optimizeProductsForNetwork(data?.data?.products || [], connectionType)
-            setProducts(optimizedProducts)
-            return
-          } catch (err) {
-            if (i === retries - 1) throw err
-            await new Promise(resolve => setTimeout(resolve, RETRY_BASE_DELAY * (i + 1)))
-          }
+        if (userData) {
+          setUser({
+            id: userData.id,
+            full_name: userData.full_name,
+            username: userData.username,
+            balance: userData.balance
+          })
         }
+
+        // 获取产品列表
+        const { data: productsData } = await supabase
+          .from('products')
+          .select('*')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+
+        if (productsData) {
+          setProducts(productsData)
+        }
+      } catch (error) {
+        console.error('Error loading data:', error)
+      } finally {
+        setLoading(false)
       }
-
-      await loadProductsWithRetry()
-    } catch (err: any) {
-      console.error('Initialization error:', err)
-      setError(err.message || 'Failed to initialize app')
-    } finally {
-      setLoading(false)
     }
-  }
 
-  // 重试机制
-  const handleRetry = () => {
-    initializeApp()
-  }
+    loadData()
+  }, [telegramUser])
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-          {!isOnline && (
-            <p className="text-red-500 text-sm mt-2">Checking network connection...</p>
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <div className="text-center">
-          <div className="text-red-500 text-5xl mb-4">⚠</div>
-          <h2 className="text-xl font-bold mb-2">Error</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <div className="space-x-2">
-            <button
-              onClick={handleRetry}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
-            >
-              Retry
-            </button>
-            {!isOnline && (
-              <button
-                onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    window.location.reload()
-                  }
-                }}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-              >
-                Reload Page
-              </button>
-            )}
-          </div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">加载中...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="pb-20">
-      {/* Header */}
-      <div className="bg-primary text-white p-4 shadow-lg">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold">Lottery Platform</h1>
-          {/* 网络状态指示器 */}
-          <div className="flex items-center space-x-2">
-            <div className={`w-2 h-2 rounded-full ${
-              isOnline ? 'bg-green-400' : 'bg-red-400'
-            }`}></div>
-            <span className="text-xs opacity-75">
-              {isOnline ? connectionType : 'Offline'}
-            </span>
-          </div>
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <div className="bg-white shadow-sm">
+        <div className="max-w-md mx-auto p-4">
+          <UserBalance user={user} />
         </div>
-        {user && <UserBalance user={user} />}
       </div>
 
-      {/* Products Grid */}
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Hot Products</h2>
-          <span className="text-sm text-gray-500">
-            {products.length} items
-          </span>
-        </div>
+      <div className="max-w-md mx-auto p-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">夺宝商城</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} user={user} />
-          ))}
-        </div>
-
-        {products.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <div className="text-4xl mb-4">📦</div>
-            <p className="text-lg font-semibold mb-2">No products available</p>
-            <p className="text-sm">Check back later for new lotteries</p>
+        {products.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">暂无夺宝商品</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
         )}
       </div>
 
-      {/* Navigation */}
       <Navigation />
     </div>
   )
