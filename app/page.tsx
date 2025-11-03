@@ -19,11 +19,15 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([])
   const [user, setUser] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
-  const { user: telegramUser } = useTelegram()
+  const { user: telegramUser, isTelegramAvailable } = useTelegram()
 
   useEffect(() => {
     async function loadData() {
-      if (!telegramUser) {
+      // 开发模式：如果不在 Telegram 环境中，使用模拟用户
+      const isDevelopment = !isTelegramAvailable
+      const effectiveUser = telegramUser || (isDevelopment ? { id: 999999999, username: 'dev_user', first_name: 'Dev' } : null)
+      
+      if (!effectiveUser) {
         setLoading(false)
         return
       }
@@ -33,7 +37,7 @@ export default function Home() {
         const { data: userData } = await supabase
           .from('users')
           .select('*')
-          .eq('telegram_id', telegramUser.id)
+          .eq('telegram_id', effectiveUser.id)
           .single()
 
         if (userData) {
@@ -63,7 +67,7 @@ export default function Home() {
     }
 
     loadData()
-  }, [telegramUser])
+  }, [telegramUser, isTelegramAvailable])
 
   if (loading) {
     return (
