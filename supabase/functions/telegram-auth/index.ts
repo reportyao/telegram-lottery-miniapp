@@ -1,12 +1,14 @@
 Deno.serve(async (req) => {
     // 宽松CORS配置，允许开发环境和生产环境
     const allowedOrigins = [
+        'http://localhost:3000',
         'https://localhost:3000',
         'https://127.0.0.1:3000',
-        'https://your-telegram-bot-name.web.app', // Telegram Mini App部署域名
-        'https://your-vercel-domain.vercel.app', // Vercel部署域名
-        'https://*.vercel.app', // 允许所有Vercel子域名
-        'https://*.telegram.org', // Telegram官方域名
+        'https://*.vercel.app',
+        'https://*.netlify.app',
+        'https://*.firebaseapp.com',
+        'https://*.telegram.org',
+        'https://web.telegram.org',
     ];
     
     const origin = req.headers.get('origin');
