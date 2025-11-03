@@ -337,7 +337,7 @@ async function handleCreateResale(supabase: any, requestData: any) {
   )
 }
 
-// 改进的取消处理函数
+// 改进的取消处理函数 - 完善的份额返还逻辑
 async function handleCancelResale(supabase: any, requestData: any) {
   const { resale_id, seller_id } = requestData
   
@@ -355,52 +355,77 @@ async function handleCancelResale(supabase: any, requestData: any) {
     )
   }
   
-  // 使用V2存储过程处理取消操作，包含份额返还逻辑
-  const { data, error } = await supabase.rpc('cancel_resale_with_refund_v2', {
-    p_resale_id: resale_id,
-    p_seller_id: seller_id
-  })
-  
-  if (error) {
-    console.error('Cancel RPC error:', error)
+  try {
+    // 使用V2存储过程处理取消操作，包含完善的份额返还逻辑
+    const { data, error } = await supabase.rpc('cancel_resale_with_refund_v2', {
+      p_resale_id: resale_id,
+      p_seller_id: seller_id
+    })
     
-    let errorMessage = 'Cancel failed'
-    let errorCode = 'CANCEL_ERROR'
-    
-    if (error.message.includes('Resale not found')) {
-      errorMessage = 'Resale not found'
-      errorCode = 'RESALE_NOT_FOUND'
-    } else if (error.message.includes('Not owner')) {
-      errorMessage = 'You can only cancel your own resales'
-      errorCode = 'NOT_OWNER'
-    } else if (error.message.includes('Not active')) {
-      errorMessage = 'Can only cancel active resales'
-      errorCode = 'NOT_ACTIVE'
+    if (error) {
+      console.error('Cancel RPC error:', error)
+      
+      let errorMessage = 'Cancel failed'
+      let errorCode = 'CANCEL_ERROR'
+      
+      if (error.message.includes('RESALE_NOT_FOUND')) {
+        errorMessage = 'Resale not found'
+        errorCode = 'RESALE_NOT_FOUND'
+      } else if (error.message.includes('NOT_OWNER')) {
+        errorMessage = 'You can only cancel your own resales'
+        errorCode = 'NOT_OWNER'
+      } else if (error.message.includes('NOT_ACTIVE')) {
+        errorMessage = 'Can only cancel active resales'
+        errorCode = 'NOT_ACTIVE'
+      } else if (error.message.includes('RESALE_CANCEL_FAILED')) {
+        errorMessage = 'Failed to cancel resale due to system error'
+        errorCode = 'SYSTEM_ERROR'
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: { 
+            code: errorCode,
+            message: errorMessage,
+            timestamp: new Date().toISOString()
+          }
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
+    
+    // 成功取消，返回详细信息
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        data: {
+          cancelled_shares: data.cancelled_shares,
+          refundable_shares: data.refundable_shares,
+          refund_amount: data.refund_amount,
+          status: data.status,
+          message: data.status === 'fully_cancelled' 
+            ? 'Resale cancelled successfully, all shares released'
+            : 'Resale partially cancelled, remaining shares still active'
+        }
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  } catch (error) {
+    console.error('Unexpected error in cancel handler:', error)
     
     return new Response(
       JSON.stringify({ 
         success: false, 
         error: { 
-          code: errorCode,
-          message: errorMessage,
+          code: 'INTERNAL_ERROR',
+          message: 'An unexpected error occurred during cancellation',
           timestamp: new Date().toISOString()
         }
       }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
-  
-  return new Response(
-    JSON.stringify({ 
-      success: true, 
-      data: {
-        cancelled_shares: data.cancelled_shares,
-        refund_amount: data.refund_amount
-      }
-    }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  )
 }
 
 // 数据库存储过程 SQL
