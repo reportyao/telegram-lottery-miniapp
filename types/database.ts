@@ -1,13 +1,15 @@
-// 数据库类型定义 - 修复版本
+// 数据库类型定义 - 完整修复版本
+
+// 基础接口定义
 export interface User {
   id: string
   telegram_id: number
   username: string | null
-  full_name: string | null
+  full_name: string
   balance: number
   language: string
-  photo_url?: string | null
-  is_premium?: boolean
+  referral_code?: string | null
+  referred_by?: string | null
   created_at: string
   updated_at: string
 }
@@ -46,6 +48,16 @@ export interface Participation {
   shares_count: number
   amount_paid: number
   created_at: string
+  // 转售相关字段（通过迁移添加）
+  is_resaleable?: boolean
+  original_participation_id?: string | null
+  resale_transaction_id?: string | null
+  
+  // 关联数据
+  user?: User
+  lottery_round?: LotteryRound & {
+    product?: Product
+  }
 }
 
 export interface Order {
@@ -61,7 +73,7 @@ export interface Order {
 export interface Transaction {
   id: string
   user_id: string
-  type: 'topup' | 'purchase' | 'refund' | 'referral' | 'prize' | 'withdrawal'
+  type: 'topup' | 'purchase' | 'refund' | 'referral' | 'prize' | 'withdrawal' | 'resale_purchase' | 'resale_purchase_fee' | 'resale_sale' | 'resale_sale_fee' | 'resale_cancellation'
   amount: number
   description: string
   reference_id: string | null
@@ -84,125 +96,6 @@ export interface UserStats {
   total_referrals: number
   total_referral_rewards: number
 }
-
-// 增强的类型定义
-export interface Post {
-  id: string
-  user_id: string
-  content: string
-  image_url?: string
-  likes_count: number
-  comments_count: number
-  created_at: string
-  updated_at: string
-  user?: User
-  is_liked?: boolean
-}
-
-export interface PostLike {
-  id: string
-  post_id: string
-  user_id: string
-  created_at: string
-}
-
-export interface PostComment {
-  id: string
-  post_id: string
-  user_id: string
-  content: string
-  created_at: string
-  updated_at: string
-  user?: User
-}
-
-export interface SystemSettings {
-  id: string
-  key: string
-  value: string
-  description?: string
-  created_at: string
-  updated_at: string
-}
-
-// API 响应类型
-export interface ApiResponse<T = any> {
-  data?: T
-  error?: string
-  message?: string
-  success: boolean
-}
-
-// 分页类型
-export interface PaginationMeta {
-  page: number
-  limit: number
-  total: number
-  totalPages: number
-}
-
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-  meta: PaginationMeta
-}
-
-// 表单验证类型
-export interface FormError {
-  field: string
-  message: string
-}
-
-// 网络状态类型
-export interface NetworkStatus {
-  isOnline: boolean
-  connectionType: 'slow-2g' | '2g' | '3g' | '4g' | 'wifi' | 'unknown'
-  effectiveType?: string
-  downlink?: number
-  rtt?: number
-}
-
-// 支持的语言类型
-export type SupportedLanguage = 'en' | 'zh' | 'ru' | 'tg'
-
-// 时间类型别名（可选）
-export type DateString = string
-
-// 抽奖状态常量
-export const LotteryStatus = {
-  ACTIVE: 'active' as const,
-  READY_TO_DRAW: 'ready_to_draw' as const,
-  COMPLETED: 'completed' as const,
-  CANCELLED: 'cancelled' as const
-} as const
-
-// 产品状态常量
-export const ProductStatus = {
-  ACTIVE: 'active' as const,
-  INACTIVE: 'inactive' as const,
-  OUT_OF_STOCK: 'out_of_stock' as const
-} as const
-
-// 订单状态常量
-export const OrderStatus = {
-  PENDING: 'pending' as const,
-  COMPLETED: 'completed' as const,
-  CANCELLED: 'cancelled' as const,
-  REFUNDED: 'refunded' as const
-} as const
-
-// 交易类型常量
-export const TransactionType = {
-  TOPUP: 'topup' as const,
-  PURCHASE: 'purchase' as const,
-  REFUND: 'refund' as const,
-  REFERRAL: 'referral' as const,
-  PRIZE: 'prize' as const,
-  WITHDRAWAL: 'withdrawal' as const,
-  RESALE_PURCHASE: 'resale_purchase' as const,
-  RESALE_PURCHASE_FEE: 'resale_purchase_fee' as const,
-  RESALE_SALE: 'resale_sale' as const,
-  RESALE_SALE_FEE: 'resale_sale_fee' as const,
-  RESALE_CANCELLATION: 'resale_cancellation' as const
-} as const
 
 // 转售相关接口定义
 export interface Resale {
@@ -280,24 +173,58 @@ export interface SystemTransaction {
   created_at: string
 }
 
-// 扩展Participation接口以支持转售字段
-export interface Participation {
+// 增强的类型定义
+export interface Post {
   id: string
   user_id: string
-  lottery_round_id: string
-  shares_count: number
-  amount_paid: number
+  content: string
+  image_url?: string
+  likes_count: number
+  comments_count: number
   created_at: string
-  // 新增转售相关字段
-  is_resaleable?: boolean
-  original_participation_id?: string | null
-  resale_transaction_id?: string | null
-  
-  // 关联数据
+  updated_at: string
   user?: User
-  lottery_round?: LotteryRound & {
-    product?: Product
+  is_liked?: boolean
+}
+
+export interface PostLike {
+  id: string
+  post_id: string
+  user_id: string
+  created_at: string
+}
+
+export interface PostComment {
+  id: string
+  post_id: string
+  user_id: string
+  content: string
+  created_at: string
+  updated_at: string
+  user?: User
+}
+
+export interface SystemSettings {
+  id: string
+  key: string
+  value: string
+  description?: string
+  created_at: string
+  updated_at: string
+}
+
+// API 响应类型
+export interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: string | {
+    code: string
+    message: string
+    details?: any
   }
+  count?: number
+  message?: string
+  timestamp: string
 }
 
 // 转售市场相关类型
@@ -311,10 +238,12 @@ export interface ResaleMarketItem {
   is_expired?: boolean
 }
 
+// API请求接口
 export interface CreateResaleRequest {
   participation_id: string
   shares_to_sell: number
   price_per_share: number
+  user_id: string
 }
 
 export interface PurchaseResaleRequest {
@@ -325,53 +254,112 @@ export interface PurchaseResaleRequest {
 
 export interface CancelResaleRequest {
   resale_id: string
-  seller_id: string
+  user_id: string
 }
 
-// API响应类型
-export interface ResaleApiResponse<T = any> extends ApiResponse<T> {
-  error?: {
-    code: string
-    message: string
-    timestamp: string
-  }
+export interface UserProfileRequest {
+  user_id: string
 }
 
-export interface PurchaseResaleResponse {
-  success: boolean
-  data?: {
-    transaction_id: string
-    new_participation_id: string
-    remaining_shares: number
-    total_cost: number
-    buyer_fee: number
-    seller_amount: number
-    seller_fee: number
-    resale_status: 'active' | 'sold'
-  }
-  error?: {
-    code: string
-    message: string
-    timestamp: string
-  }
+export interface UserProfileResponse {
+  user: User
+  stats: UserStats
+  participations: Participation[]
+  transactions: Transaction[]
+  resales: Resale[]
 }
 
-export interface CancelResaleResponse {
-  success: boolean
-  data?: {
-    cancelled_shares: number
-    refundable_shares: number
-    refund_amount: number
-    status: 'fully_cancelled' | 'partially_cancelled'
-  }
-  error?: {
-    code: string
-    message: string
-    timestamp: string
-  }
+// 表单验证类型
+export interface FormError {
+  [key: string]: string
 }
 
-// 转售状态常量
+// 网络状态类型
+export interface NetworkStatus {
+  isOnline: boolean
+  connectionType: 'slow-2g' | '2g' | '3g' | '4g' | 'wifi' | 'unknown'
+  effectiveType?: string
+  downlink?: number
+  rtt?: number
+}
+
+// 分页类型
+export interface PaginationMeta {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
+
+export interface PaginatedResponse<T> {
+  data: T[]
+  count: number
+  page: number
+  limit: number
+  hasMore: boolean
+}
+
+// 筛选和排序类型
+export interface FilterOptions {
+  status?: string
+  category?: string
+  date_from?: string
+  date_to?: string
+  search?: string
+}
+
+export interface SortOptions {
+  field: string
+  direction: 'asc' | 'desc'
+}
+
+// 数据库错误处理类型
+export interface DatabaseError {
+  code: string
+  message: string
+  details?: any
+  hint?: string
+}
+
+// 类型别名
+export type SupportedLanguage = 'en' | 'zh' | 'ru' | 'tg'
+export type DateString = string
+
+// 状态常量
+export const LotteryStatus = {
+  ACTIVE: 'active' as const,
+  READY_TO_DRAW: 'ready_to_draw' as const,
+  COMPLETED: 'completed' as const,
+  CANCELLED: 'cancelled' as const
+} as const
+
+export const ProductStatus = {
+  ACTIVE: 'active' as const,
+  INACTIVE: 'inactive' as const,
+  OUT_OF_STOCK: 'out_of_stock' as const
+} as const
+
+export const OrderStatus = {
+  PENDING: 'pending' as const,
+  COMPLETED: 'completed' as const,
+  CANCELLED: 'cancelled' as const,
+  REFUNDED: 'refunded' as const
+} as const
+
+export const TransactionType = {
+  TOPUP: 'topup' as const,
+  PURCHASE: 'purchase' as const,
+  REFUND: 'refund' as const,
+  REFERRAL: 'referral' as const,
+  PRIZE: 'prize' as const,
+  WITHDRAWAL: 'withdrawal' as const,
+  RESALE_PURCHASE: 'resale_purchase' as const,
+  RESALE_PURCHASE_FEE: 'resale_purchase_fee' as const,
+  RESALE_SALE: 'resale_sale' as const,
+  RESALE_SALE_FEE: 'resale_sale_fee' as const,
+  RESALE_CANCELLATION: 'resale_cancellation' as const
+} as const
+
 export const ResaleStatus = {
   ACTIVE: 'active' as const,
   SOLD: 'sold' as const,
@@ -379,21 +367,18 @@ export const ResaleStatus = {
   EXPIRED: 'expired' as const
 } as const
 
-// 转售交易状态常量
 export const ResaleTransactionStatus = {
   COMPLETED: 'completed' as const,
   CANCELLED: 'cancelled' as const,
   REFUNDED: 'refunded' as const
 } as const
 
-// 返还记录状态常量
 export const RefundRecordStatus = {
   PENDING: 'pending' as const,
   PROCESSED: 'processed' as const,
   COMPLETED: 'completed' as const
 } as const
 
-// 份额锁定状态常量
 export const ShareLockStatus = {
   LOCKED: 'locked' as const,
   RELEASED: 'released' as const,
@@ -420,97 +405,6 @@ export const TABLES = {
   REFUND_RECORDS: 'refund_records',
   SYSTEM_TRANSACTIONS: 'system_transactions'
 } as const
-
-// API请求/响应接口定义
-export interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  error?: string | {
-    code: string
-    message: string
-    details?: any
-  }
-  count?: number
-  message?: string
-  timestamp: string
-}
-
-// 转售相关API接口
-export interface CreateResaleRequest {
-  participation_id: string
-  shares_to_sell: number
-  price_per_share: number
-  user_id: string
-}
-
-export interface PurchaseResaleRequest {
-  resale_id: string
-  shares_to_buy: number
-  buyer_id: string
-}
-
-export interface CancelResaleRequest {
-  resale_id: string
-  user_id: string
-}
-
-export interface ResaleListRequest {
-  action: 'list' | 'my_resales' | 'create' | 'purchase' | 'cancel'
-  user_id?: string
-  resale_id?: string
-  shares_to_sell?: number
-  price_per_share?: number
-  shares_to_buy?: number
-}
-
-// 用户资料API接口
-export interface UserProfileRequest {
-  user_id: string
-}
-
-export interface UserProfileResponse {
-  user: User
-  stats: UserStats
-  participations: Participation[]
-  transactions: Transaction[]
-  resales: Resale[]
-}
-
-// 表单错误类型
-export interface FormError {
-  [key: string]: string
-}
-
-// 数据库错误处理类型
-export interface DatabaseError {
-  code: string
-  message: string
-  details?: any
-  hint?: string
-}
-
-// 分页相关类型
-export interface PaginatedResponse<T> {
-  data: T[]
-  count: number
-  page: number
-  limit: number
-  hasMore: boolean
-}
-
-// 筛选和排序类型
-export interface FilterOptions {
-  status?: string
-  category?: string
-  date_from?: string
-  date_to?: string
-  search?: string
-}
-
-export interface SortOptions {
-  field: string
-  direction: 'asc' | 'desc'
-}
 
 // 转售业务常量
 export const RESALE_CONSTANTS = {
