@@ -20,10 +20,15 @@ fi
 
 echo "✅ 项目目录确认"
 
-# 设置npm镜像 (可选)
-echo "🔧 配置npm..."
-npm config set registry https://registry.npm.taobao.org
-echo "✅ NPM镜像配置完成"
+# 设置npm配置以解决网络问题
+echo "🔧 配置npm以解决网络问题..."
+npm config set registry https://registry.npmmirror.com
+npm config set fetch-retries 5
+npm config set fetch-retry-mintimeout 20000
+npm config set fetch-retry-maxtimeout 120000
+npm config set timeout 300000
+npm config set progress=false
+echo "✅ NPM配置完成"
 
 # 清理之前的安装
 echo "🧹 清理之前的安装..."
@@ -35,35 +40,53 @@ echo "✅ 清理完成"
 echo "📦 开始安装依赖..."
 echo "这可能需要几分钟时间..."
 
-# 方法1: 标准安装
-if npm install; then
-    echo "✅ 依赖安装成功!"
+# 分批安装策略
+echo "1️⃣ 安装核心框架..."
+npm install next@14.2.33 react@18.2.0 react-dom@18.2.0 --force --no-progress
+
+if [ $? -eq 0 ]; then
+    echo "✅ 核心框架安装成功"
 else
-    echo "⚠️ 标准安装失败，尝试替代方法..."
-    
-    # 方法2: 分批安装核心依赖
-    echo "🔄 尝试分批安装..."
-    
-    # 安装核心依赖
-    npm install next react react-dom @supabase/supabase-js @telegram-apps/sdk
-    if [ $? -eq 0 ]; then
-        echo "✅ 核心依赖安装成功"
-    else
-        echo "❌ 安装失败，请检查网络连接"
+    echo "❌ 核心框架安装失败，尝试使用Yarn..."
+    npm install -g yarn
+    yarn install
+    if [ $? -ne 0 ]; then
+        echo "❌ Yarn安装也失败，请检查网络连接"
         exit 1
     fi
+fi
+
+echo "2️⃣ 安装Supabase和Telegram SDK..."
+npm install @supabase/supabase-js@2.39.0 @telegram-apps/sdk@1.1.0 --force --no-progress
+
+echo "3️⃣ 安装UI组件库..."
+npm install clsx@2.1.0 tailwind-merge@2.2.0 @radix-ui/react-dialog@1.0.5 lucide-react@0.344.0 --force --no-progress
+
+echo "4️⃣ 安装TypeScript和开发依赖..."
+npm install -D typescript@5.0.0 @types/node@20.0.0 @types/react@18.2.0 @types/react-dom@18.2.0 --force --no-progress
+
+echo "5️⃣ 安装其他开发依赖..."
+npm install -D eslint@8.57.0 eslint-config-next@14.2.33 tailwindcss@3.4.0 postcss@8.4.0 jest@29.7.0 --force --no-progress
+
+# 验证安装
+echo "🔍 验证安装..."
+if [ -d "node_modules" ]; then
+    echo "✅ node_modules目录存在"
+    echo "📊 安装的包数量: $(ls node_modules | wc -l)"
     
-    # 安装UI依赖
-    npm install clsx tailwind-merge @radix-ui/react-dialog lucide-react
-    if [ $? -eq 0 ]; then
-        echo "✅ UI依赖安装成功"
-    fi
-    
-    # 安装开发依赖
-    npm install --save-dev typescript @types/node @types/react @types/react-dom eslint eslint-config-next jest @testing-library/react
-    if [ $? -eq 0 ]; then
-        echo "✅ 开发依赖安装成功"
-    fi
+    # 检查关键包
+    key_packages=("next" "react" "@supabase/supabase-js" "@telegram-apps/sdk")
+    for package in "${key_packages[@]}"; do
+        if [ -d "node_modules/$package" ]; then
+            echo "✅ $package 已安装"
+        else
+            echo "⚠️ $package 安装失败，尝试单独安装..."
+            npm install $package --force --no-progress
+        fi
+    done
+else
+    echo "❌ node_modules目录不存在，安装可能失败"
+    exit 1
 fi
 
 # 类型检查
